@@ -22,6 +22,7 @@
 | `npm run docs:dev` | 本地开发预览，默认 http://localhost:5173 |
 | `npm run docs:build` | 生产构建，产物输出到 `docs/.vitepress/dist` |
 | `npm run docs:preview` | 本地预览构建产物，默认 http://localhost:4173 |
+| `npm run docs:deploy` | 构建 + 外链检查 + 打包；配置服务器信息后可一键上传 |
 | `pwsh scripts/build-check.ps1` | 扫描产物中是否存在外部资源引用（离线发布检查） |
 
 ## 目录结构
@@ -30,17 +31,20 @@
 MaDongdongDocs/
 ├── docs/                        # VitePress 文档源目录
 │   ├── index.md                 # 首页
-│   ├── public/                  # 静态资源（logo、图片等）
-│   ├── guide/writing.md         # 写作规范
-│   ├── java/                    # Java 笔记
+│   ├── public/                  # 静态资源（logo、favicon、图片等）
+│   ├── guide/writing.md           # 写作规范
+│   ├── java/                     # Java 笔记
 │   ├── spring-boot/             # Spring Boot 笔记
-│   ├── database/                # 数据库笔记
+│   ├── database/                 # 数据库笔记
 │   └── .vitepress/
-│       ├── config.ts             # 站点、导航、侧边栏、搜索、页脚配置
+│       ├── config.ts             # 站点、导航、侧边栏、搜索、locales、页脚配置
 │       └── theme/
-│           ├── index.ts         # 主题扩展（挂载评论占位插槽）
-│           └── components/Comment.vue  # 二期评论组件占位
-├── scripts/build-check.ps1       # 产物外链检查脚本
+│           ├── index.ts          # 主题扩展（挂载评论插槽）
+│           └── components/Comment.vue  # Waline 评论组件（未配置后端时不渲染）
+├── scripts/
+│   ├── build-check.ps1           # 产物外链检查脚本
+│   └── deploy.ps1                # 构建 + 检查 + 打包 / 可选上传脚本
+├── .env.example                  # 环境变量示例（Waline 后端地址）
 └── package.json
 ```
 
@@ -71,17 +75,44 @@ server {
 
 4. 重载 Nginx：`nginx -s reload`。
 
-## 二期路线
+## 搜索（Pagefind 离线索引）
 
-- **搜索增强**：内容规模扩大后，接入 Pagefind 等离线索引方案；不使用 Algolia。
-- **评论区**：在自有服务器部署 Waline 后端，替换 `Comment.vue` 占位实现；当前 v1 不渲染评论。
-- **部署自动化**：补充上传脚本或 CI 流程，构建后自动发布到服务器。
-- **多语言**：按 VitePress locales 结构扩展英文等语言。
-- **品牌素材**：替换正式 Logo 与 favicon。
+- 采用 `vitepress-plugin-pagefind` + `pagefind`，索引在本地构建时生成，随静态产物一起发布，不依赖公网搜索服务、不接 Algolia。
+- 中文查询经 `Intl.Segmenter` 分词优化；搜索框文案在 `config.ts` 的 `pagefindPlugin.locales` 中维护。
+- 索引产物位于 `dist/pagefind/`；dev 模式下不生成索引，搜索面板以构建产物（`docs:preview`）为准。
+- 某篇文章不希望被索引时，在该页 frontmatter 加 `pagefind-indexed: false`。
+
+## 评论区（Waline）
+
+- 前端组件已接入 `@waline/client`，评论会话按当前路由路径区分，明暗主题跟随站点外观。
+- **后端尚未部署**：在项目根目录复制 `.env.example` 为 `.env.local`，填写 `VITE_WALINE_SERVER_URL`（自有服务器或托管部署的 Waline 服务地址）；未配置时评论区不渲染、不发起请求。
+- Waline 后端需配套数据库（LeanCloud / MySQL / MongoDB / Supabase 等），部署后端后回填地址即可启用。`.env.local` 已被 Git 忽略。
+
+## 部署自动化
+
+`scripts/deploy.ps1` 流程：安装依赖（如缺失）→ `docs:build` → 外链检查 → 打包 `deploy/madongdong-docs-<时间戳>.zip`。
+
+默认只构建打包，不上传。开启上传需通过环境变量提供服务器信息：
+
+```powershell
+$env:DEPLOY_UPLOAD="true"
+$env:DEPLOY_SSH_USER="deploy"
+$env:DEPLOY_SSH_HOST="你的服务器"
+$env:DEPLOY_REMOTE_PATH="/var/www/madongdong-docs"
+npm run docs:deploy
+```
+
+脚本会先备份远端当前目录（`<remote-path>.bak-<时间戳>`），再解压新版本；未提供信息时安全跳过上传。
+
+## 多语言与品牌
+
+- `config.ts` 已按 VitePress `locales` 结构组织，当前仅中文（root）；新增语言时在 `locales` 下追加键并补齐导航、侧边栏与内容目录。
+- favicon 与占位 Logo 位于 `docs/public/`；正式品牌素材可直接替换同名文件。
 
 ## 技术栈
 
 - VitePress 1.6
 - markdown-it-mathjax3（LaTeX 公式，本地渲染）
 - vitepress-plugin-mermaid + Mermaid 11（流程图 / 序列图）
-- 内置本地搜索
+- Pagefind（离线全文搜索，中文分词优化）
+- @waline/client（评论前端，后端地址可配置）

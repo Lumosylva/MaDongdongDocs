@@ -1,27 +1,39 @@
 <script setup lang="ts">
-import { useRoute } from 'vitepress'
+import { computed } from 'vue'
+import { useRoute, useData } from 'vitepress'
+import { Waline } from '@waline/client/component'
+import '@waline/client/style'
 
 /**
- * 评论区占位组件（v1 不渲染）。
+ * 评论区组件（Waline）。
  *
- * 二期接入 Waline 时：
- * 1. 安装 @waline/client 及其样式；
- * 2. 在此挂载 Waline 组件，serverURL 指向自有服务器部署的 Waline 后端；
- * 3. 用下方 pagePath / pageTitle 定位当前页评论会话。
+ * 接入方式：
+ * 1. 部署 Waline 后端（自有服务器 / Vercel / 其他托管，配套 LeanCloud、MySQL、MongoDB 等数据库）；
+ * 2. 在项目根目录 `.env.local` 中配置后端地址：`VITE_WALINE_SERVER_URL=https://你的-waline-后端`；
+ * 3. 未配置该地址时，本组件不渲染任何评论区，避免访问空后端。
+ *
+ * 评论会话按当前路由路径（path）区分，明暗主题跟随站点外观。
  */
 const route = useRoute()
+const { isDark } = useData()
 
-const pagePath = route.path
-const pageTitle = (route.data?.title as string | undefined) ?? ''
+const serverURL = computed(
+  () => (import.meta.env?.VITE_WALINE_SERVER_URL ?? '') as string
+)
+const enabled = computed(() => serverURL.value.trim().length > 0)
+const pagePath = computed(() => route.path)
 </script>
 
 <template>
-  <!-- v1：评论区留空，不输出任何占位可见元素 -->
-  <div class="comment-slot" :data-page-path="pagePath" :data-page-title="pageTitle" />
+  <div v-if="enabled" class="comment-slot" :data-page-path="pagePath">
+    <Waline :server-url="serverURL" :path="pagePath" :dark="isDark" />
+  </div>
 </template>
 
 <style scoped>
 .comment-slot {
-  display: none;
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--vp-divider-color);
 }
 </style>
