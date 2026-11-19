@@ -1,0 +1,22 @@
+{
+  "name": "madongdong-docs",
+  "version": "1.0.0",
+  "private": true,
+  "description": "马东东的技术教程 - 自建学习笔记 / 教程站点（VitePress）",
+  "type": "module",
+  "scripts": {
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
+  },
+  "devDependencies": {
+    "debug": "^4.4.3",
+    "markdown-it-mathjax3": "^4.3.2",
+    "mermaid": "^11.0.0",
+    "vitepress": "^1.6.4",
+    "vitepress-plugin-mermaid": "^2.0.17"
+  },
+  "dependencies": {
+    "madongdong-docs": "file:"
+  }
+}
