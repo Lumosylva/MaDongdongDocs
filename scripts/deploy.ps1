@@ -16,8 +16,8 @@
 # 解压成扁平文件名。
 #
 # 用法（项目根目录）：
-#   pwsh scripts/deploy.ps1                       # 构建 + 检查 + 打包
-#   $env:DEPLOY_UPLOAD="true"; pwsh scripts/deploy.ps1   # 构建并上传
+#   .\scripts\deploy.ps1                                  # 构建 + 检查 + 打包
+#   $env:DEPLOY_UPLOAD="true"; .\scripts\deploy.ps1       # 构建并上传
 
 $ErrorActionPreference = 'Stop'
 
@@ -58,6 +58,11 @@ function Invoke-Step($title, $action) {
 if (-not (Test-Path (Join-Path $root 'node_modules'))) {
   Invoke-Step '安装依赖' { npm install --no-audit --no-fund }
 }
+
+# 清理 VitePress 残留临时目录：被中断的构建会留下半成品 .temp，
+# 下次 SSR 渲染可能报 ERR_MODULE_NOT_FOUND（找不到 .md.js 模块）。
+$viteTemp = Join-Path $root 'docs/.vitepress/.temp'
+if (Test-Path $viteTemp) { Remove-Item -Recurse -Force $viteTemp }
 
 # 2) 构建产物
 Invoke-Step '构建站点' { npm run docs:build }
