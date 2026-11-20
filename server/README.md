@@ -14,7 +14,8 @@
 | `.env.example` | 环境变量模板；复制为 `.env` 填真实值，`.env` 不入库 |
 | `waline.service` | systemd 单元（工作目录 `/var/www/waline`，`EnvironmentFile` 注入 `.env`） |
 | `nginx-comment.conf` | `comment.madongdong.com` 的 Nginx 反代配置 |
-| `setup.sh` | 生产机初始化脚本（装依赖、落单元、挂 Nginx、起服务），幂等可重复执行 |
+| `init-sqlite.cjs` | SQLite 表结构初始化脚本（幂等建三张表与索引），由 `setup.sh` 自动调用 |
+| `setup.sh` | 生产机初始化脚本（装依赖、建表、落单元、挂 Nginx、起服务），幂等可重复执行 |
 
 ## 部署前必备条件
 
@@ -55,7 +56,9 @@
    sudo bash setup.sh
    ```
 
-   脚本会：创建 `/var/www/waline/data` → 安装生产依赖 → 落 systemd 单元 → 挂 Nginx 站点 → `nginx -t` → 启动 `waline` 服务。
+   脚本会：创建 `/var/www/waline/data` → 安装生产依赖 → `init-sqlite.cjs` 初始化 SQLite 三张表与索引（幂等）→ 落 systemd 单元（运行用户 `www-data`）→ 挂 Nginx 站点 → `nginx -t` → 启动 `waline` 服务。
+
+   > SQLite 场景 Waline 不会自动建表；表结构由 `init-sqlite.cjs` 依据官方 `waline.sqlite` / `waline.sql` 生成，无需再手动下载二进制模板。
 
 5. 验证服务与后台：
 
@@ -114,7 +117,8 @@ sudo cp -r /var/www/waline/data /var/backups/waline-data-$(date +%F)
 ## 故障排查
 
 - **启动报 `Error: Not initialized` / 回退 LeanCloud**：`SQLITE_PATH` 或 `JWT_TOKEN` 未被进程读到，检查 systemd `EnvironmentFile` 路径与 `.env` 键名，重启服务。
-- **Nginx 502**：先 `systemctl status waline` 看进程是否在 8360 监听；`journalctl -u waline` 看启动报错。
+- **接口 500 `no such table: wl_Comment`**：SQLite 表结构未初始化。在 `/var/www/waline` 下执行 `sudo node init-sqlite.cjs` 后 `sudo systemctl restart waline`；或直接重跑 `sudo bash setup.sh`。
+- **Nginx 502 / 503**：先 `systemctl status waline` 看进程是否在 8360 监听；`journalctl -u waline` 看启动报错。
 - **邮件发不出**：核对 SMTP 主机/端口/授权码；QQ 邮箱 465 端口 `SMTP_SECURE=true`；授权码不是登录密码。
 - **前端评论区不渲染**：确认前端 `.env.local` 的 `VITE_WALINE_SERVER_URL` 已填并重新构建；未配置时组件按设计不渲染。
 - **跨域 / 评论提交被拒**：`SECURE_DOMAINS` 需同时包含站点域名与后端域名，不含 `http://`、`https://` 与端口。

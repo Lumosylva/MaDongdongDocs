@@ -5,7 +5,7 @@
 set -euo pipefail
 
 APP_DIR=/var/www/waline
-APP_USER=donny
+APP_USER=www-data
 SRC_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 echo "==> 检查 Node"
@@ -17,6 +17,7 @@ sudo mkdir -p "$APP_DIR/data"
 
 echo "==> 拷贝后端清单文件"
 sudo cp "$SRC_DIR/package.json" "$APP_DIR/"
+sudo cp "$SRC_DIR/init-sqlite.cjs" "$APP_DIR/"
 if [ -f "$SRC_DIR/package-lock.json" ]; then
   sudo cp "$SRC_DIR/package-lock.json" "$APP_DIR/"
 fi
@@ -38,6 +39,14 @@ if [ ! -f "$APP_DIR/.env" ]; then
     echo "!! 已从 .env.example 复制 .env；请先填写 JWT_TOKEN、SMTP_USER/SMTP_PASS、AUTHOR_EMAIL 后再启动"
   fi
 fi
+
+echo "==> 初始化 SQLite 表结构（幂等）"
+# 应用不会自动加载 .env，这里导出 SQLite 相关变量供建表脚本读取
+set -a
+# shellcheck disable=SC1091
+source "$APP_DIR/.env"
+set +a
+sudo node "$APP_DIR/init-sqlite.cjs"
 
 echo "==> 目录属主（运行用户 $APP_USER）"
 sudo chown -R "$APP_USER":"$APP_USER" "$APP_DIR"
