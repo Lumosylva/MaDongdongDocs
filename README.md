@@ -103,7 +103,7 @@ server {
 
 - 前端组件已接入 `@waline/client`，评论会话按当前路由路径区分，明暗主题跟随站点外观。
 - 后端为**自建 Waline 进程**：部署模板与运维手册见 [`server/`](server/README.md)，Node + systemd 常驻，Nginx 子域名 `comment.madongdong.com` 反代到本地 8360；SQLite 默认存储（预留 MySQL 切换），启用邮件通知、评论先审后显、Akismet + IP 限频 + 敏感词反垃圾。
-- 前端回填：后端上线后，在项目根目录复制 `.env.example` 为 `.env.local`，填写 `VITE_WALINE_SERVER_URL=https://comment.madongdong.com` 并重新构建发布；未配置时评论区不渲染、不发起请求。`.env.local` 已被 Git 忽略。
+- 前端回填：后端上线后，在 `docs/.env.local` 填写 `VITE_WALINE_SERVER_URL=https://comment.madongdong.com` 并重新构建发布；未配置时评论区不渲染、不发起请求。`.env.local` 已被 Git 忽略（VitePress 以 `docs/` 为根，环境文件需放在 `docs/` 下，仓库根目录的 `.env.local` 不会被读取）。
 - 后端 `.env`（含 SMTP 授权码、`JWT_TOKEN` 等敏感信息）只存在于生产机，不纳入版本库。
 
 ## 部署自动化

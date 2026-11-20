@@ -9,13 +9,13 @@ import '@waline/client/style'
  *
  * 接入方式：
  * 1. 部署 Waline 后端（自有服务器 / Vercel / 其他托管，配套 LeanCloud、MySQL、MongoDB 等数据库）；
- * 2. 在项目根目录 `.env.local` 中配置后端地址：`VITE_WALINE_SERVER_URL=https://你的-waline-后端`；
+ * 2. 在 `docs/.env.local` 中配置后端地址：`VITE_WALINE_SERVER_URL=https://你的-waline-后端`；
  * 3. 未配置该地址时，本组件不渲染任何评论区，避免访问空后端。
  *
  * 评论会话按当前路由路径（path）区分，明暗主题跟随站点外观。
  */
 const route = useRoute()
-const { isDark } = useData()
+const { isDark, lang } = useData()
 
 const serverURL = computed(
   () => (import.meta.env?.VITE_WALINE_SERVER_URL ?? '') as string
@@ -26,7 +26,7 @@ const pagePath = computed(() => route.path)
 
 <template>
   <div v-if="enabled" class="comment-slot" :data-page-path="pagePath">
-    <Waline :server-url="serverURL" :path="pagePath" :dark="isDark" />
+    <Waline :serverURL="serverURL" :path="pagePath" :dark="isDark" :lang="lang" />
   </div>
 </template>
 

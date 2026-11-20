@@ -4,7 +4,7 @@
 
 - 后端包：`@waline/vercel`，独立运行入口 `node node_modules/@waline/vercel/vanilla.js`，默认监听 `127.0.0.1:8360`。
 - 对外入口：`https://comment.madongdong.com`（Nginx 反代到本地 8360）。
-- 前端组件：仓库 `docs/.vitepress/theme/components/Comment.vue`，后端地址由根目录 `.env.local` 的 `VITE_WALINE_SERVER_URL` 注入。
+- 前端组件：仓库 `docs/.vitepress/theme/components/Comment.vue`，后端地址由 `docs/.env.local` 的 `VITE_WALINE_SERVER_URL` 注入（VitePress 以 `docs/` 为根，环境文件须放在 `docs/` 下）。
 
 ## 目录文件
 
@@ -14,6 +14,7 @@
 | `.env.example` | 环境变量模板；复制为 `.env` 填真实值，`.env` 不入库 |
 | `waline.service` | systemd 单元（工作目录 `/var/www/waline`，`EnvironmentFile` 注入 `.env`） |
 | `nginx-comment.conf` | `comment.madongdong.com` 的 Nginx 反代配置 |
+| `nginx-docs.conf` | `docs.madongdong.com` 文档站静态站点 Nginx 配置（root `/var/www/docs`） |
 | `init-sqlite.cjs` | SQLite 表结构初始化脚本（幂等建三张表与索引），由 `setup.sh` 自动调用 |
 | `setup.sh` | 生产机初始化脚本（装依赖、建表、落单元、挂 Nginx、起服务），幂等可重复执行 |
 
@@ -70,7 +71,7 @@
 
    浏览器打开 `https://comment.madongdong.com/ui/register` 注册管理员账号（**第一个注册用户自动成为管理员**）。
 
-6. 前端回填：在本机仓库根目录 `.env.local` 填：
+6. 前端回填：在本机 `docs/.env.local` 填：
 
    ```env
    VITE_WALINE_SERVER_URL=https://comment.madongdong.com
@@ -120,6 +121,6 @@ sudo cp -r /var/www/waline/data /var/backups/waline-data-$(date +%F)
 - **接口 500 `no such table: wl_Comment`**：SQLite 表结构未初始化。在 `/var/www/waline` 下执行 `sudo node init-sqlite.cjs` 后 `sudo systemctl restart waline`；或直接重跑 `sudo bash setup.sh`。
 - **Nginx 502 / 503**：先 `systemctl status waline` 看进程是否在 8360 监听；`journalctl -u waline` 看启动报错。
 - **邮件发不出**：核对 SMTP 主机/端口/授权码；QQ 邮箱 465 端口 `SMTP_SECURE=true`；授权码不是登录密码。
-- **前端评论区不渲染**：确认前端 `.env.local` 的 `VITE_WALINE_SERVER_URL` 已填并重新构建；未配置时组件按设计不渲染。
+- **前端评论区不渲染**：确认前端 `docs/.env.local` 的 `VITE_WALINE_SERVER_URL` 已填并重新构建；未配置时组件按设计不渲染。
 - **跨域 / 评论提交被拒**：`SECURE_DOMAINS` 需同时包含站点域名与后端域名，不含 `http://`、`https://` 与端口。
 - **环境变量改动不生效**：Waline 环境变量变更后必须重启进程，仅改文件不够。
