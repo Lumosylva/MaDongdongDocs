@@ -36,4 +36,15 @@ const pagePath = computed(() => route.path)
   padding-top: 24px;
   border-top: 1px solid var(--vp-divider-color);
 }
+
+/*
+ * Waline 输入框由 autosize 逐键内联调整高度。
+ * Waline 默认样式是 `transition: all .25s ease`，高度一旦参与过渡，
+ * autosize 在动画过程中读到滞后的 scrollHeight/height，会造成高度来回
+ * 震荡（输入框抖动/闪动）。这里把过渡收窄为只保留聚焦背景色，排除高度动画。
+ */
+:deep(.wl-editor),
+:deep(.wl-input) {
+  transition: background-color .25s ease;
+}
 </style>

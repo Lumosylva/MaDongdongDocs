@@ -14,16 +14,24 @@ if (-not (Test-Path $distPath)) {
   exit 1
 }
 
-# 1) 检查 HTML 中外部 src/href 资源引用
+# 1) 检查 HTML 中真正会发起外部请求的资源引用：
+#    - src 属性（script / img / iframe / audio / video / source / embed 等）
+#    - <link> 标签的 href（样式表 / 图标 / preload）
+#    普通导航锚点 <a href> 只是链接跳转、不加载资源，不计入失败项。
+$resourceUrl = '(?:https?:)?//[^"''\s>]+'
 $htmlFiles = Get-ChildItem -Recurse -File $distPath -Include *.html
 $externalRefs = @()
 foreach ($f in $htmlFiles) {
   $text = Get-Content $f.FullName -Raw
   if (-not $text) { continue }
-  foreach ($m in [regex]::Matches($text, '(?:src|href)="(https?://[^"]+)"')) {
+  foreach ($m in [regex]::Matches($text, "\ssrc=`"($resourceUrl)`"")) {
+    $externalRefs += [pscustomobject]@{ File = $f.Name; Ref = $m.Groups[1].Value }
+  }
+  foreach ($m in [regex]::Matches($text, "<link[^>]*\shref=`"($resourceUrl)`"")) {
     $externalRefs += [pscustomobject]@{ File = $f.Name; Ref = $m.Groups[1].Value }
   }
 }
+$externalRefs = $externalRefs | Sort-Object File, Ref -Unique
 
 # 2) 检查 CSS 中外部 url() / @import
 $cssFiles = Get-ChildItem -Recurse -File $distPath -Include *.css

@@ -169,6 +169,11 @@ export default withMermaid(
     },
 
     vite: {
+      build: {
+        // Mermaid 各图种、KaTeX 均为按需懒加载分包，单包体积偏大属预期；
+        // 这里仅调高 Rollup 告警阈值，不关闭代码分包。
+        chunkSizeWarningLimit: 800
+      },
       plugins: [
         pagefindPlugin({
           // manual：索引生成与资源加载由本站脚本/构建命令接管（见 head 脚本与 docs:build）
