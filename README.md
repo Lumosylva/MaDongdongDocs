@@ -30,12 +30,13 @@
 ```
 MaDongdongDocs/
 ├── docs/                        # VitePress 文档源目录
-│   ├── index.md                 # 首页
+│   ├── index.md                 # 中文首页
 │   ├── public/                  # 静态资源（logo、favicon、图片等）
-│   ├── guide/writing.md           # 写作规范
-│   ├── java/                     # Java 笔记
-│   ├── spring-boot/             # Spring Boot 笔记
-│   ├── database/                 # 数据库笔记
+│   ├── guide/writing.md          # 中文写作规范
+│   ├── java/                    # 中文 Java 笔记
+│   ├── spring-boot/             # 中文 Spring Boot 笔记
+│   ├── database/                 # 中文数据库笔记
+│   ├── en/                       # 英文镜像（与中文目录一一对应）
 │   └── .vitepress/
 │       ├── config.ts             # 站点、导航、侧边栏、搜索、locales、页脚配置
 │       └── theme/
@@ -79,6 +80,7 @@ server {
 
 - 采用 `vitepress-plugin-pagefind` + `pagefind`，索引在本地构建时生成，随静态产物一起发布，不依赖公网搜索服务、不接 Algolia。
 - 中文查询经 `Intl.Segmenter` 分词优化；搜索框文案在 `config.ts` 的 `pagefindPlugin.locales` 中维护。
+- 插件以 `manual` 模式运行：索引由 `docs:build` 末尾的 `pagefind` CLI 生成，前端加载脚本在 `config.ts` 的 `head` 中显式指定 `basePath: '/pagefind/'` 并关闭 SharedWorker，避免子目录（如 `/en/`）下相对路径解析错误。
 - 索引产物位于 `dist/pagefind/`；dev 模式下不生成索引，搜索面板以构建产物（`docs:preview`）为准。
 - 某篇文章不希望被索引时，在该页 frontmatter 加 `pagefind-indexed: false`。
 
@@ -106,8 +108,9 @@ npm run docs:deploy
 
 ## 多语言与品牌
 
-- `config.ts` 已按 VitePress `locales` 结构组织，当前仅中文（root）；新增语言时在 `locales` 下追加键并补齐导航、侧边栏与内容目录。
-- favicon 与占位 Logo 位于 `docs/public/`；正式品牌素材可直接替换同名文件。
+- `config.ts` 按 VitePress `locales` 结构组织：root 为中文（`docs/` 根目录），`en` 为英文镜像（`docs/en/`），导航、侧边栏、页脚与搜索文案分别维护。
+- 新增语言时在 `locales` 下追加键，复制对应内容目录并补齐导航 / 侧边栏。
+- Logo 与 favicon 位于 `docs/public/`（`logo.svg` / `favicon.svg`）；品牌素材可直接替换同名文件。
 
 ## 技术栈
 

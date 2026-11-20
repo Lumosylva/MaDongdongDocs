@@ -5,20 +5,43 @@ import {
   chineseSearchOptimize
 } from 'vitepress-plugin-pagefind'
 
-// 站点品牌信息（二期固化）
+// 站点品牌信息
 const siteTitle = '马东东的技术教程'
 const siteDescription = '技术让生活更美好'
 
 // 站点基础配置
-// 搜索：二期切换为 Pagefind 离线索引（本地打包，不接 Algolia、不依赖公网 CDN）。
-// 多语言：当前仅中文（root）；后续新增语言时在 locales 下追加键并补齐内容目录。
+// 搜索：Pagefind 离线索引（本地打包，不接 Algolia、不依赖公网 CDN）。
+// 多语言：root 为中文（内容在 docs/ 根目录）；en 为英文（内容在 docs/en/）。
 export default withMermaid(
   defineConfig({
     cleanUrls: true,
     lastUpdated: true,
 
     head: [
-      ['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }]
+      ['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
+      // Pagefind 离线搜索：manual 模式下由本站手动加载。
+      // 显式指定 basePath 并关闭 SharedWorker，避免子目录（如 /en/）下
+      // 相对路径解析错误；索引在 docs:build 末尾由 pagefind CLI 生成。
+      [
+        'script',
+        {},
+        `
+        const __loadPagefind = () => {
+          import('/pagefind/pagefind.js')
+            .then((module) => {
+              window.__pagefind__ = module
+              module.options({ noWorker: true, basePath: '/pagefind/' })
+              module.init()
+            })
+            .catch(() => {})
+        }
+        if (window.requestIdleCallback) {
+          window.requestIdleCallback(__loadPagefind)
+        } else {
+          setTimeout(__loadPagefind, 0)
+        }
+        `
+      ]
     ],
 
     markdown: {
@@ -83,16 +106,61 @@ export default withMermaid(
           // 二期：关联 GitHub 仓库后，在此添加 socialLinks：
           // socialLinks: [{ icon: 'github', link: 'https://github.com/Lumosylva/MaDongdongDocs' }]
         }
-      }
+      },
 
-      // 预留：新增英文等语言时在此追加，例如：
-      // en: {
-      //   lang: 'en-US',
-      //   label: 'English',
-      //   title: 'Ma Dongdong Tech Notes',
-      //   description: 'Technology makes life better',
-      //   themeConfig: { nav: [...], sidebar: {...} }
-      // }
+      en: {
+        lang: 'en-US',
+        label: 'English',
+        link: '/en/',
+        title: 'Ma Dongdong Tech Notes',
+        description: 'Technology makes life better',
+
+        themeConfig: {
+          logo: '/logo.svg',
+
+          nav: [
+            { text: 'Home', link: '/en/' },
+            { text: 'Java', link: '/en/java/' },
+            { text: 'Spring Boot', link: '/en/spring-boot/' },
+            { text: 'Database', link: '/en/database/' },
+            { text: 'Writing Guide', link: '/en/guide/writing' }
+          ],
+
+          sidebar: {
+            '/en/java/': [
+              {
+                text: 'Java Basics',
+                items: [{ text: 'Overview', link: '/en/java/' }]
+              }
+            ],
+            '/en/spring-boot/': [
+              {
+                text: 'Spring Boot',
+                items: [{ text: 'Overview', link: '/en/spring-boot/' }]
+              }
+            ],
+            '/en/database/': [
+              {
+                text: 'Database',
+                items: [{ text: 'Overview', link: '/en/database/' }]
+              }
+            ],
+            '/en/guide/': [
+              {
+                text: 'Site Guide',
+                items: [{ text: 'Writing Conventions', link: '/en/guide/writing' }]
+              }
+            ]
+          },
+
+          outline: { level: [2, 3] },
+
+          footer: {
+            message: 'Technology makes life better',
+            copyright: 'Copyright © 2026 madongdong.com · Lumosylva'
+          }
+        }
+      }
     },
 
     // Mermaid 主题配置；明暗主题由插件自动适配
@@ -103,6 +171,8 @@ export default withMermaid(
     vite: {
       plugins: [
         pagefindPlugin({
+          // manual：索引生成与资源加载由本站脚本/构建命令接管（见 head 脚本与 docs:build）
+          manual: true,
           // 中文分词查询优化（基于浏览器内置 Intl.Segmenter）
           customSearchQuery: chineseSearchOptimize,
           // 各语言搜索框文案；键与 locales 键对应
@@ -112,6 +182,13 @@ export default withMermaid(
               placeholder: '搜索文档',
               emptyText: '暂无匹配结果',
               heading: '共 {{searchResult}} 条结果',
+              showDate: false
+            },
+            en: {
+              btnPlaceholder: 'Search',
+              placeholder: 'Search docs',
+              emptyText: 'No matching results',
+              heading: 'Total: {{searchResult}} results',
               showDate: false
             }
           }
