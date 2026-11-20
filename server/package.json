@@ -8,7 +8,7 @@
     "start": "node node_modules/@waline/vercel/vanilla.js"
   },
   "dependencies": {
-    "@waline/vercel": "^1.43.4"
+    "@waline/vercel": "1.43.4"
   },
   "engines": {
     "node": ">=20"

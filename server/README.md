@@ -84,9 +84,10 @@ sudo journalctl -u waline -f
 # 改完 .env 后重启生效
 sudo systemctl restart waline
 
-# 升级后端版本
+# 升级后端版本（注意：当前精确锁定 1.43.4；1.43.5+ 的 engines 要求 Node 26，
+# 升级版本前需先把 Node 升到 26，否则保持 1.43.4）
 cd /var/www/waline
-sudo npm install @waline/vercel@latest --production
+sudo npm install @waline/vercel@1.43.4 --production
 sudo systemctl restart waline
 
 # 备份 SQLite（停服或在线拷贝均可，建议备份 data 目录）
