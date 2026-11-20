@@ -45,7 +45,14 @@ MaDongdongDocs/
 ├── scripts/
 │   ├── build-check.ps1           # 产物外链检查脚本
 │   └── deploy.ps1                # 构建 + 检查 + 打包 / 可选上传脚本
-├── .env.example                  # 环境变量示例（Waline 后端地址）
+├── server/                        # Waline 自建评论后端部署模板（Node + systemd + Nginx）
+│   ├── README.md                 # 后端部署 / 运维 / 排障手册
+│   ├── package.json               # 后端依赖（@waline/vercel）
+│   ├── .env.example               # 后端环境变量模板（SQLite / 邮件 / 审核 / 反垃圾）
+│   ├── waline.service             # systemd 单元
+│   ├── nginx-comment.conf         # comment.madongdong.com 反代配置
+│   └── setup.sh                   # 生产机初始化脚本（幂等）
+├── .env.example                  # 前端环境变量示例（Waline 后端地址）
 └── package.json
 ```
 
@@ -58,14 +65,22 @@ MaDongdongDocs/
 站点为纯静态产物，服务器上无需安装 Node。
 
 1. 本机执行 `npm run docs:build`，生成 `docs/.vitepress/dist`。
-2. 将 `dist` 目录内容上传到服务器站点目录（例如 `/var/www/madongdong-docs`）。
-3. Nginx 配置示例（配合 cleanUrls）：
+2. 将 `dist` 目录内容上传到服务器站点目录（例如 `/var/www/docs`），由独立子域 `docs.madongdong.com` 发布。
+3. Nginx 配置示例（配合 cleanUrls，证书复用现有泛域名证书）：
 
 ```nginx
 server {
     listen 80;
-    server_name madongdong.com;
-    root /var/www/madongdong-docs;
+    server_name docs.madongdong.com;
+    return 301 https://docs.madongdong.com$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name docs.madongdong.com;
+    ssl_certificate     /etc/letsencrypt/live/madongdong.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/madongdong.com/privkey.pem;
+    root /var/www/docs;
     index index.html;
 
     location / {
@@ -87,8 +102,9 @@ server {
 ## 评论区（Waline）
 
 - 前端组件已接入 `@waline/client`，评论会话按当前路由路径区分，明暗主题跟随站点外观。
-- **后端尚未部署**：在项目根目录复制 `.env.example` 为 `.env.local`，填写 `VITE_WALINE_SERVER_URL`（自有服务器或托管部署的 Waline 服务地址）；未配置时评论区不渲染、不发起请求。
-- Waline 后端需配套数据库（LeanCloud / MySQL / MongoDB / Supabase 等），部署后端后回填地址即可启用。`.env.local` 已被 Git 忽略。
+- 后端为**自建 Waline 进程**：部署模板与运维手册见 [`server/`](server/README.md)，Node + systemd 常驻，Nginx 子域名 `comment.madongdong.com` 反代到本地 8360；SQLite 默认存储（预留 MySQL 切换），启用邮件通知、评论先审后显、Akismet + IP 限频 + 敏感词反垃圾。
+- 前端回填：后端上线后，在项目根目录复制 `.env.example` 为 `.env.local`，填写 `VITE_WALINE_SERVER_URL=https://comment.madongdong.com` 并重新构建发布；未配置时评论区不渲染、不发起请求。`.env.local` 已被 Git 忽略。
+- 后端 `.env`（含 SMTP 授权码、`JWT_TOKEN` 等敏感信息）只存在于生产机，不纳入版本库。
 
 ## 部署自动化
 
@@ -100,7 +116,7 @@ server {
 $env:DEPLOY_UPLOAD="true"
 $env:DEPLOY_SSH_USER="deploy"
 $env:DEPLOY_SSH_HOST="你的服务器"
-$env:DEPLOY_REMOTE_PATH="/var/www/madongdong-docs"
+$env:DEPLOY_REMOTE_PATH="/var/www/docs"
 npm run docs:deploy
 ```
 

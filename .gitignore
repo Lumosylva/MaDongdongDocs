@@ -24,5 +24,10 @@ desktop.ini
 .env.local
 .env.*.local
 
+# Waline 后端（server/）本地依赖、密钥与 SQLite 数据，不纳入版本库
+server/node_modules/
+server/.env
+server/data/
+
 # 内部执行记录（不纳入版本库）
 .tasks/

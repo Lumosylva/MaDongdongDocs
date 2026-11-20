@@ -1,0 +1,16 @@
+{
+  "name": "madongdong-waline",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Waline 自建评论后端（@waline/vercel），SQLite 默认，供 madongdong.com 技术教程站点使用",
+  "main": "node_modules/@waline/vercel/vanilla.js",
+  "scripts": {
+    "start": "node node_modules/@waline/vercel/vanilla.js"
+  },
+  "dependencies": {
+    "@waline/vercel": "^1.43.4"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

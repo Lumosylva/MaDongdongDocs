@@ -8,7 +8,7 @@
 #   DEPLOY_UPLOAD        设为 "true" 才执行上传；默认 "false"（只构建打包）
 #   DEPLOY_SSH_USER     SSH 登录用户
 #   DEPLOY_SSH_HOST     SSH 主机 / IP
-#   DEPLOY_REMOTE_PATH  Nginx 站点根目录，例如 /var/www/madongdong-docs
+#   DEPLOY_REMOTE_PATH  Nginx 站点根目录，例如 /var/www/docs（docs.madongdong.com）
 #   DEPLOY_SSH_KEY      可选，私钥路径；不配则使用本机默认密钥
 #
 # 用法（项目根目录）：

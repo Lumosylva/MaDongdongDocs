@@ -1,0 +1,20 @@
+[Unit]
+Description=Waline comment backend (@waline/vercel)
+After=network.target
+
+[Service]
+Type=simple
+# 运行用户：生产机为 donny（与 SSH 登录用户一致）；如改用专用用户请同步修改目录属主
+User=donny
+WorkingDirectory=/var/www/waline
+Environment=NODE_ENV=production
+Environment=TZ=Asia/Shanghai
+# 环境变量由 .env 注入；应用本身不会自动加载 .env 文件
+EnvironmentFile=/var/www/waline/.env
+ExecStart=/usr/bin/node /var/www/waline/node_modules/@waline/vercel/vanilla.js
+Restart=always
+RestartSec=3
+# 日志通过 journalctl -u waline 查看
+
+[Install]
+WantedBy=multi-user.target
