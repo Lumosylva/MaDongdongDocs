@@ -45,6 +45,10 @@ if [ -z "$BASE" ] || [ "${BASE#*/}" != "$BASE" ]; then
   echo "基础名非法：'$BASE'（必须非空且不含 '/'）" >&2
   exit 2
 fi
+# 通配符会让 find -name 的匹配面重新变宽（如 BASE='*' → '*.bak-*'）
+case "$BASE" in
+  *'*'*|*'?'*|*'['*) echo "基础名不能含通配符（* ? [）：'$BASE'" >&2; exit 2 ;;
+esac
 # 拒绝对根目录做批量 rm -rf
 if [ "$PARENT" = "/" ]; then
   echo "父目录不能是 /" >&2
