@@ -6,6 +6,9 @@ docs/.vitepress/dist/
 docs/.vitepress/cache/
 docs/.vitepress/.temp/
 
+# VitePress 构建时生成的配置时间戳临时文件（每次 build 名字不同）
+docs/.vitepress/*.timestamp-*.mjs
+
 # 部署打包产物
 deploy/
 
