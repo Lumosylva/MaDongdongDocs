@@ -5,6 +5,32 @@ import {
   chineseSearchOptimize
 } from 'vitepress-plugin-pagefind'
 
+// Mermaid 组件需要在根节点主题 class 变化时重绘图表。上游当前监听根节点所有属性，
+// autosize 在删除 textarea 内容时改写 html.style.scrollBehavior，会误触发图表重绘，
+// 造成页面高度瞬时变化；此适配将监听范围限制为 class（明暗主题切换）。
+const mermaidThemeObserverFilter = {
+  name: 'mermaid-theme-class-observer-filter',
+  enforce: 'pre' as const,
+  transform(code: string, id: string) {
+    const normalizedId = id.replace(/\\/g, '/')
+    if (!normalizedId.endsWith('/vitepress-plugin-mermaid/dist/Mermaid.vue')) {
+      return null
+    }
+
+    const broadObserver = 'mut.observe(document.documentElement, { attributes: true });'
+    if (!code.includes(broadObserver)) {
+      throw new Error(
+        'vitepress-plugin-mermaid observer changed; review the scroll-jitter compatibility patch.'
+      )
+    }
+
+    return code.replace(
+      broadObserver,
+      'mut.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });'
+    )
+  }
+}
+
 // 站点品牌信息
 const siteTitle = '马东东的技术教程'
 const siteDescription = '技术让生活更美好'
@@ -175,6 +201,7 @@ export default withMermaid(
         chunkSizeWarningLimit: 800
       },
       plugins: [
+        mermaidThemeObserverFilter,
         pagefindPlugin({
           // manual：索引生成与资源加载由本站脚本/构建命令接管（见 head 脚本与 docs:build）
           manual: true,

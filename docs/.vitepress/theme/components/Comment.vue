@@ -24,14 +24,10 @@ const enabled = computed(() => serverURL.value.trim().length > 0)
 const pagePath = computed(() => route.path)
 
 /**
- * 中文输入法（IME）组词期间，autosize 会根据临时上屏的拼音/候选词反复测量并
- * 改写输入框高度；组词文本与最终提交内容的换行数不一致，高度在两行间来回跳动，
- * 表现为输入框短暂上下抖动。英文直接上屏、换行数稳定，因此不会出现。
- *
- * 处理方式：compositionstart 时用 `!important` 类把当前高度锁住（组词期不随
- * autosize 跳动）；compositionend 后保持锁定到下一帧，在最终 input 事件完成后
- * 先让 autosize 按最终内容重算，再解除锁定，避免 compositionend 与最终 input
- * 的事件时序间隙暴露临时高度。
+ * IME 组合输入期间冻结编辑框尺寸，避免 autosize 对临时拼音/候选内容测量时
+ * 产生不稳定布局。compositionend 后保持冻结到下一帧，等最终 input 完成后重算。
+ * 页面级滚动跳动的根因是 autosize 改写 html.style 触发 Mermaid 重绘，已在
+ * VitePress 配置中将 Mermaid 观察范围限制为根节点的主题 class。
  */
 const slotRef = ref<HTMLElement | null>(null)
 let editorEl: HTMLTextAreaElement | null = null
