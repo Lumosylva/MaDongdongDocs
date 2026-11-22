@@ -4,12 +4,13 @@
 # 运行环境：本机 Windows / Node 22；服务器不跑 Node，只接收静态产物由 Nginx 发布。
 # 默认仅完成构建、检查与打包；上传需显式开启并提供服务器连接信息。
 #
-# 连接信息优先级：同名环境变量 > 下方脚本内默认值。
+# 部署参数可持久配置在项目根目录的 deploy.local.ps1 中；双击 deploy.bat 时会自动加载。
+# 直接运行本脚本时，也可通过同名环境变量传入，环境变量优先于下方默认值。
 #   DEPLOY_UPLOAD        设为 "true" 才执行上传；默认 "false"（只构建打包）
-#   DEPLOY_SSH_USER     SSH 登录用户
-#   DEPLOY_SSH_HOST     SSH 主机 / IP
-#   DEPLOY_REMOTE_PATH  Nginx 站点根目录，例如 /var/www/docs（docs.madongdong.com）
-#   DEPLOY_SSH_KEY      可选，私钥路径；不配则使用本机默认密钥
+#   DEPLOY_SSH_HOST      SSH 主机 / IP
+#   DEPLOY_REMOTE_PATH   Nginx 站点根目录，例如 /var/www/docs（docs.madongdong.com）
+#   DEPLOY_SSH_USER      SSH 登录用户
+#   DEPLOY_SSH_KEY       可选，私钥路径；不配则使用本机默认密钥
 #
 # 远端解压：优先 unzip；未安装时回退 python3 -m zipfile（两者任一可用即可）。
 # 打包归档名统一使用正斜杠，避免 Windows Compress-Archive 的反斜杠在 Linux 上

@@ -29,7 +29,9 @@ const pagePath = computed(() => route.path)
  * 表现为输入框短暂上下抖动。英文直接上屏、换行数稳定，因此不会出现。
  *
  * 处理方式：compositionstart 时用 `!important` 类把当前高度锁住（组词期不随
- * autosize 跳动），compositionend 后再派发 autosize:update 按最终内容重算一次。
+ * autosize 跳动）；compositionend 后保持锁定到下一帧，在最终 input 事件完成后
+ * 先让 autosize 按最终内容重算，再解除锁定，避免 compositionend 与最终 input
+ * 的事件时序间隙暴露临时高度。
  */
 const slotRef = ref<HTMLElement | null>(null)
 let editorEl: HTMLTextAreaElement | null = null
@@ -46,23 +48,45 @@ const bindEditor = (el: HTMLTextAreaElement) => {
   if (el === editorEl) return
   unbindEditor()
   editorEl = el
+  let pendingResizeFrame: number | null = null
+  let compositionVersion = 0
 
   const onCompositionStart = () => {
+    compositionVersion += 1
+    if (pendingResizeFrame !== null) {
+      cancelAnimationFrame(pendingResizeFrame)
+      pendingResizeFrame = null
+    }
     el.style.setProperty('--wl-freeze-h', `${el.offsetHeight}px`)
     el.classList.add('is-composing')
   }
   const onCompositionEnd = () => {
-    el.classList.remove('is-composing')
-    requestAnimationFrame(() => {
+    const version = ++compositionVersion
+    if (pendingResizeFrame !== null) {
+      cancelAnimationFrame(pendingResizeFrame)
+    }
+    pendingResizeFrame = requestAnimationFrame(() => {
+      pendingResizeFrame = null
+      if (version !== compositionVersion) return
+
       el.dispatchEvent(new Event('autosize:update'))
+      el.classList.remove('is-composing')
+      el.style.removeProperty('--wl-freeze-h')
     })
   }
 
   el.addEventListener('compositionstart', onCompositionStart)
   el.addEventListener('compositionend', onCompositionEnd)
   detach = () => {
+    compositionVersion += 1
+    if (pendingResizeFrame !== null) {
+      cancelAnimationFrame(pendingResizeFrame)
+      pendingResizeFrame = null
+    }
     el.removeEventListener('compositionstart', onCompositionStart)
     el.removeEventListener('compositionend', onCompositionEnd)
+    el.classList.remove('is-composing')
+    el.style.removeProperty('--wl-freeze-h')
   }
 }
 
