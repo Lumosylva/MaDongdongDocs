@@ -43,6 +43,12 @@ export default withMermaid(
     cleanUrls: true,
     lastUpdated: true,
 
+    // 站点地图：构建时输出 dist/sitemap.xml，供搜索引擎抓取；
+    // robots.txt（docs/public/robots.txt）里声明了同一地址。
+    sitemap: {
+      hostname: 'https://docs.madongdong.com'
+    },
+
     head: [
       ['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
       // Pagefind 离线搜索：manual 模式下由本站手动加载。

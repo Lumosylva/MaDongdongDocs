@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# 站点地图（构建时由 VitePress sitemap 配置生成）
+Sitemap: https://docs.madongdong.com/sitemap.xml

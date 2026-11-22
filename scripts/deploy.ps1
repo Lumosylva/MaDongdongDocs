@@ -1,8 +1,9 @@
 #requires -Version 5.1
 # 部署自动化脚本：本地构建 VitePress 站点 -> 外链检查 -> 打包 dist -> 可选上传到自有服务器。
 #
-# 运行环境：本机 Windows / Node 22；服务器不跑 Node，只接收静态产物由 Nginx 发布。
+# 运行环境：本机 Windows / Node 26；服务器不跑 Node，只接收静态产物由 Nginx 发布。
 # 默认仅完成构建、检查与打包；上传需显式开启并提供服务器连接信息。
+# 远端发布前会备份当前目录到 `<站点根>.bak-<时间戳>`，并只保留最近 3 份（KEEP 常量）。
 #
 # 部署参数可持久配置在项目根目录的 deploy.local.ps1 中；双击 deploy.bat 时会自动加载。
 # 直接运行本脚本时，也可通过同名环境变量传入，环境变量优先于下方默认值。
@@ -141,6 +142,8 @@ set -euo pipefail
 TARGET='__TARGET__'
 BACKUP="$TARGET.bak-__TAG__"
 ZIP='__ZIP__'
+# 备份保留份数：每类只留最近 KEEP 份，其余按时间戳名倒序删除，避免磁盘累积。
+KEEP=3
 
 mkdir -p "$TARGET"
 if [ -d "$TARGET" ] && [ -n "$(ls -A "$TARGET" 2>/dev/null)" ]; then
@@ -153,7 +156,23 @@ else
   python3 -m zipfile -e "$ZIP" "$TARGET"
 fi
 rm -f "$ZIP"
-echo "发布完成：$TARGET（备份：$BACKUP）"
+
+# 裁剪历史备份：仅保留最近 KEEP 份
+PARENT="$(dirname "$TARGET")"
+BASE="$(basename "$TARGET")"
+if [ -d "$PARENT" ]; then
+  find "$PARENT" -maxdepth 1 -mindepth 1 -type d -name "$BASE.bak-*" 2>/dev/null \
+    | sort -r \
+    | tail -n +$((KEEP + 1)) \
+    | while IFS= read -r old; do
+        if [ -n "$old" ] && [ -d "$old" ]; then
+          rm -rf "$old"
+          echo "已清理旧备份：$old"
+        fi
+      done || true
+fi
+
+echo "发布完成：$TARGET（备份：$BACKUP，保留最近 ${KEEP} 份）"
 '@
 
 $remoteContent = $remoteTemplate.
