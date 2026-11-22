@@ -16,7 +16,8 @@
 set -uo pipefail
 
 usage() {
-  sed -n '3,10p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+  # 用注释锚点取区间，避免注释块增删行后行号错位；末尾的「说明：」行不带入用法
+  sed -n '/^# 用法/,/^# 说明/p' "${BASH_SOURCE[0]}" | sed '$d' | sed 's/^# \{0,1\}//'
 }
 
 if [ "$#" -lt 2 ]; then
@@ -37,6 +38,17 @@ if [ "$KEEP" = "--dry-run" ]; then
 fi
 if [ "${4:-}" = "--dry-run" ]; then
   DRY_RUN=1
+fi
+
+# 基础名必须显式给出且不含路径分隔符：否则匹配面会退化成 ".bak-*"，可能误删兄弟目录的备份
+if [ -z "$BASE" ] || [ "${BASE#*/}" != "$BASE" ]; then
+  echo "基础名非法：'$BASE'（必须非空且不含 '/'）" >&2
+  exit 2
+fi
+# 拒绝对根目录做批量 rm -rf
+if [ "$PARENT" = "/" ]; then
+  echo "父目录不能是 /" >&2
+  exit 2
 fi
 
 case "$KEEP" in

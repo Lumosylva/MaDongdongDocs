@@ -118,6 +118,7 @@ $env:DEPLOY_UPLOAD="true"
 $env:DEPLOY_SSH_HOST="你的服务器"
 $env:DEPLOY_REMOTE_PATH="/var/www/docs"
 # 可选：$env:DEPLOY_SSH_USER="deploy"；$env:DEPLOY_SSH_KEY="私钥路径"
+# 可选：$env:DEPLOY_BACKUP_KEEP="3"   # 远端备份保留份数，1-50，默认 3
 npm run docs:deploy
 ```
 

@@ -106,24 +106,35 @@ sudo cp -r /var/www/waline/data /var/backups/waline-data-$(date +%F)
 
 ## 备份清理（通用脚本）
 
-文档站的 `scripts/deploy.ps1` 会自动把 `<站点根>.bak-<时间戳>` 裁到最近 3 份；Waline 这类不在部署脚本里的目录，用 `server/prune-backups.sh` 手动或定时清理：
+文档站的 `scripts/deploy.ps1` 会自动把 `<站点根>.bak-<时间戳>` 裁到最近 3 份；Waline 这类不在部署脚本里的目录，用 `server/prune-backups.sh` 手动或定时清理。
+
+**先把脚本装到生产机**（脚本不随站点产物发布，仓库里有、生产机没有；升级时重跑同样两条）：
+
+```bash
+# 在仓库根目录执行
+scp server/prune-backups.sh root@36.150.231.4:/tmp/prune-backups.sh
+ssh root@36.150.231.4 "install -m 755 /tmp/prune-backups.sh /usr/local/bin/prune-backups.sh && rm -f /tmp/prune-backups.sh"
+```
+
+装好后用法（下文统一用绝对路径，cron 里尤其必须绝对路径，`crontab` 的 `PATH` 与登录 shell 不同）：
 
 ```bash
 # 只看会删哪些，不动文件
-sudo bash prune-backups.sh /var/www waline 3 --dry-run
+/usr/local/bin/prune-backups.sh /var/www waline 3 --dry-run
 
 # 实际清理：保留最近 3 份 /var/www/waline.bak-*
-sudo bash prune-backups.sh /var/www waline 3
+sudo /usr/local/bin/prune-backups.sh /var/www waline 3
 ```
 
 - 参数：`<父目录> <基础名> [保留份数=3] [--dry-run]`；基础名自动拼成 `<基础名>.bak-*`
 - 只处理目录、按名字时间戳倒序；非法参数退出码 2，单份删除失败会汇总警告但退出码仍为 0
+- 基础名必须非空且不含 `/`，父目录不能是 `/`（防止匹配面退化成 `.bak-*` 或对根目录批量删除）
 - 如需定时执行（**默认不安装**，由你决定）：
 
 ```bash
 # 每天 04:00 清理一次；先手动跑 --dry-run 确认范围再启用
 sudo crontab -e
-0 4 * * * bash /var/www/waline/../prune-backups.sh /var/www waline 3 >> /var/log/prune-backups.log 2>&1
+0 4 * * * /usr/local/bin/prune-backups.sh /var/www waline 3 >> /var/log/prune-backups.log 2>&1
 ```
 
 

@@ -1,9 +1,8 @@
 User-agent: *
 Allow: /
 
-# 搜索索引与静态资源目录无需抓取，避免占用抓取预算
+# 离线搜索索引无需抓取；静态资源（CSS/JS/图片）保持可抓，避免爬虫渲染时拿到无样式页面
 Disallow: /pagefind/
-Disallow: /assets/
 
 # 站点地图（构建时由 VitePress sitemap 配置生成）
 Sitemap: https://docs.madongdong.com/sitemap.xml
