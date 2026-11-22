@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Waline 后端生产机初始化脚本（幂等，可重复执行）。
 # 用法：把仓库 server/ 目录上传到生产机后，sudo bash server/setup.sh
-# 前提：Node 22 已安装（node -v 可用）；DNS A 记录 comment.madongdong.com 已解析到本机。
+# 前提：Node 26 已安装（node -v 可用）；DNS A 记录 comment.madongdong.com 已解析到本机。
 set -euo pipefail
 
 APP_DIR=/var/www/waline
@@ -9,8 +9,12 @@ APP_USER=www-data
 SRC_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 echo "==> 检查 Node"
-command -v node >/dev/null || { echo "未检测到 Node，请先安装 Node 22"; exit 1; }
+command -v node >/dev/null || { echo "未检测到 Node，请先安装 Node 26"; exit 1; }
 node -v
+NODE_MAJOR="$(node -p 'process.versions.node.split(".")[0]')"
+if [ "$NODE_MAJOR" -lt 26 ]; then
+  echo "!! 当前 Node 主版本为 $NODE_MAJOR，@waline/vercel 1.43.5+ 要求 >=26，请先升级运行时"
+fi
 
 echo "==> 准备目录 $APP_DIR"
 sudo mkdir -p "$APP_DIR/data"
@@ -25,9 +29,9 @@ fi
 echo "==> 安装生产依赖"
 cd "$APP_DIR"
 if [ -f package-lock.json ]; then
-  sudo npm ci --production --no-audit --no-fund
+  sudo npm ci --omit=dev --no-audit --no-fund
 else
-  sudo npm install --production --no-audit --no-fund
+  sudo npm install --omit=dev --no-audit --no-fund
 fi
 
 echo "==> 检查 .env"

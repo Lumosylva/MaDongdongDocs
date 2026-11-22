@@ -20,7 +20,7 @@
 
 ## 部署前必备条件
 
-1. **Node 22**：生产机宿主机需安装 Node 22（`node -v` 可用）。
+1. **Node 26**：生产机宿主机需安装 Node 26（`node -v` 可用）。`@waline/vercel` 1.43.5+ 的 engines 为 `^26.0.0`；1.43.4 是最后支持 Node 20/22/24 的版本。
 2. **DNS**：在域名服务商为两个子域分别添加 A 记录 → 生产机公网 IP（`36.150.231.4`）：`comment.madongdong.com`（评论后端）、`docs.madongdong.com`（文档站前端）。本机现有主站/子域均为逐条显式 A 记录，无泛域名解析。
 3. **证书**：复用现有泛域名证书 `/etc/letsencrypt/live/madongdong.com/`，子域无需新签。
 4. **凭据准备**（仅填入生产机 `.env`，不入 Git）：
@@ -30,12 +30,15 @@
 
 ## 首次部署步骤
 
-1. 在生产机安装 Node 22（示例，Ubuntu 24.04）：
+1. 在生产机安装 Node 26（示例，Ubuntu 24.04，二进制安装避免 NodeSource 版本滞后）：
 
    ```bash
-   # NodeSource 方式；若网络访问慢，可改用 npmmirror 二进制安装
-   curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
-   sudo apt-get install -y nodejs
+   curl -sSL -o /tmp/node26.tar.xz https://nodejs.org/dist/v26.13.1/node-v26.13.1-linux-x64.tar.xz
+   mkdir -p /opt/nodejs && tar -xJf /tmp/node26.tar.xz -C /opt/nodejs
+   mv /opt/nodejs/node-v26.13.1-linux-x64 /opt/nodejs/26
+   ln -sfn /opt/nodejs/26/bin/node /usr/local/bin/node
+   ln -sfn /opt/nodejs/26/bin/npm  /usr/local/bin/npm
+   ln -sfn /opt/nodejs/26/bin/npx  /usr/local/bin/npx
    node -v && npm -v
    ```
 
@@ -88,10 +91,13 @@ sudo journalctl -u waline -f
 # 改完 .env 后重启生效
 sudo systemctl restart waline
 
-# 升级后端版本（注意：当前精确锁定 1.43.4；1.43.5+ 的 engines 要求 Node 26，
-# 升级版本前需先把 Node 升到 26，否则保持 1.43.4）
+# 升级后端版本（当前锁定 1.43.8，需 Node 26；1.43.5+ 的 engines 均为 ^26.0.0）
 cd /var/www/waline
-sudo npm install @waline/vercel@1.43.4 --production
+sudo npm install @waline/vercel@1.43.8 --omit=dev
+# 关键：npm install 以 root 执行会把新包属主写成 root，而进程以 www-data 运行，
+# ThinkJS 启动时要写 runtime/config/production.json，权限不足会 ENOENT 起不来。
+sudo chown -R www-data:www-data /var/www/waline
+sudo chmod -R u+rwX /var/www/waline
 sudo systemctl restart waline
 
 # 备份 SQLite（停服或在线拷贝均可，建议备份 data 目录）
@@ -120,6 +126,7 @@ sudo cp -r /var/www/waline/data /var/backups/waline-data-$(date +%F)
 - **启动报 `Error: Not initialized` / 回退 LeanCloud**：`SQLITE_PATH` 或 `JWT_TOKEN` 未被进程读到，检查 systemd `EnvironmentFile` 路径与 `.env` 键名，重启服务。
 - **接口 500 `no such table: wl_Comment`**：SQLite 表结构未初始化。在 `/var/www/waline` 下执行 `sudo node init-sqlite.cjs` 后 `sudo systemctl restart waline`；或直接重跑 `sudo bash setup.sh`。
 - **Nginx 502 / 503**：先 `systemctl status waline` 看进程是否在 8360 监听；`journalctl -u waline` 看启动报错。
+- **启动报 `ENOENT ... runtime/config/production.json`**：`npm install` 以 root 执行后包目录属主变 root，`www-data` 无法写 ThinkJS 运行期配置。执行 `sudo chown -R www-data:www-data /var/www/waline && sudo systemctl restart waline` 即可。
 - **邮件发不出**：核对 SMTP 主机/端口/授权码；QQ 邮箱 465 端口 `SMTP_SECURE=true`；授权码不是登录密码。
 - **前端评论区不渲染**：确认前端 `docs/.env.local` 的 `VITE_WALINE_SERVER_URL` 已填并重新构建；未配置时组件按设计不渲染。
 - **跨域 / 评论提交被拒**：`SECURE_DOMAINS` 需同时包含站点域名与后端域名，不含 `http://`、`https://` 与端口。
