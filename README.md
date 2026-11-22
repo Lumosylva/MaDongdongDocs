@@ -84,7 +84,8 @@ server {
     index index.html;
 
     location / {
-        try_files $uri $uri/ $uri.html /index.html;
+        # cleanUrls 站点：产物是 xxx.html，对外链接不带后缀，必须保留 $uri.html 回退
+        try_files $uri $uri.html $uri/ =404;
     }
 }
 ```
@@ -120,7 +121,7 @@ $env:DEPLOY_REMOTE_PATH="/var/www/docs"
 npm run docs:deploy
 ```
 
-脚本会先备份远端当前目录（`<remote-path>.bak-<时间戳>`），再解压新版本；未提供信息时安全跳过上传。
+远端发布流程：先把当前站点目录备份成 `<remote-path>.bak-<时间戳>`，再把 zip 解压到 `/tmp` 暂存目录、用 `rsync -a --delete` 切换到站点根（解压失败时旧站不受影响，无空站窗口；服务器无 rsync 时降级为清空后复制并打印警告），最后按时间戳倒序裁剪历史备份，**只保留最近 3 份**；份数可用 `DEPLOY_BACKUP_KEEP=2` 这类环境变量调整（1-50）。未提供上传信息时安全跳过上传。
 
 ## 多语言与品牌
 

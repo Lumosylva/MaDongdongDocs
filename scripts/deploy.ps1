@@ -12,6 +12,11 @@
 #   DEPLOY_REMOTE_PATH   Nginx 站点根目录，例如 /var/www/docs（docs.madongdong.com）
 #   DEPLOY_SSH_USER      SSH 登录用户
 #   DEPLOY_SSH_KEY       可选，私钥路径；不配则使用本机默认密钥
+#   DEPLOY_BACKUP_KEEP   可选，远端备份保留份数（默认 3，允许 1-50）
+#
+# 远端发布：先 cp -a 备份当前目录到 `<站点根>.bak-<时间戳>`，再把 zip 解压到 /tmp 暂存目录、
+# 用 rsync -a --delete 切换到站点根（无空站窗口；无 rsync 时降级为清空后复制并打印警告），
+# 最后按时间戳倒序裁掉超出 DEPLOY_BACKUP_KEEP 的旧备份。
 #
 # 远端解压：优先 unzip；未安装时回退 python3 -m zipfile（两者任一可用即可）。
 # 打包归档名统一使用正斜杠，避免 Windows Compress-Archive 的反斜杠在 Linux 上
@@ -39,6 +44,14 @@ $deploy = @{
   SshHost    = Coalesce $env:DEPLOY_SSH_HOST ''
   RemotePath = Coalesce $env:DEPLOY_REMOTE_PATH ''
   SshKey     = Coalesce $env:DEPLOY_SSH_KEY ''
+}
+
+# 远端备份保留份数：DEPLOY_BACKUP_KEEP 覆盖，默认 3；非法值直接报错，避免远端拿到奇怪的 tail 参数。
+$keepRaw = (Coalesce $env:DEPLOY_BACKUP_KEEP '3').ToString().Trim()
+$keepNum = 0
+if (-not [int]::TryParse($keepRaw, [ref]$keepNum) -or $keepNum -lt 1 -or $keepNum -gt 50) {
+  Write-Error "DEPLOY_BACKUP_KEEP 必须是 1-50 的整数，当前值：'$keepRaw'"
+  exit 1
 }
 
 $distDir     = Join-Path $root 'docs/.vitepress/dist'
@@ -140,36 +153,61 @@ $localRemoteScript = Join-Path $env:TEMP "deploy-$timestamp.remote.sh"
 $remoteTemplate = @'
 set -euo pipefail
 TARGET='__TARGET__'
-BACKUP="$TARGET.bak-__TAG__"
 ZIP='__ZIP__'
-# 备份保留份数：每类只留最近 KEEP 份，其余按时间戳名倒序删除，避免磁盘累积。
-KEEP=3
+STAMP='__TAG__'
+# 备份保留份数：由 PowerShell 侧 DEPLOY_BACKUP_KEEP 注入
+KEEP='__KEEP__'
+
+# 归一化目标路径：去掉结尾斜杠（否则备份会落进站点根内部，既可能被公开访问又永不裁剪）
+while [ "${TARGET%/}" != "$TARGET" ]; do TARGET="${TARGET%/}"; done
+if [ -z "$TARGET" ] || [ "$TARGET" = "/" ]; then
+  echo "目标路径非法：'__TARGET__'（拒绝空路径与根目录）" >&2
+  exit 1
+fi
+
+BACKUP="$TARGET.bak-$STAMP"
+STAGE="/tmp/deploy-stage-$STAMP"
+# 无论成功失败都清掉暂存目录，避免中断后残留
+trap 'rm -rf "$STAGE"' EXIT
 
 mkdir -p "$TARGET"
 if [ -d "$TARGET" ] && [ -n "$(ls -A "$TARGET" 2>/dev/null)" ]; then
   cp -a "$TARGET" "$BACKUP"
 fi
-rm -rf "$TARGET"/*
+
+# 先解压到暂存目录：解压失败时旧站完全不受影响（避免“先清空再解压”造成的空站窗口）
+rm -rf "$STAGE"
+mkdir -p "$STAGE"
 if command -v unzip >/dev/null 2>&1; then
-  unzip -q -o "$ZIP" -d "$TARGET"
+  unzip -q -o "$ZIP" -d "$STAGE"
 else
-  python3 -m zipfile -e "$ZIP" "$TARGET"
+  python3 -m zipfile -e "$ZIP" "$STAGE"
 fi
 rm -f "$ZIP"
 
-# 裁剪历史备份：仅保留最近 KEEP 份
+if command -v rsync >/dev/null 2>&1; then
+  rsync -a --delete "$STAGE/" "$TARGET/"
+else
+  echo "警告：未找到 rsync，回退为清空后复制（切换瞬间可能出现空站）" >&2
+  rm -rf "$TARGET"/*
+  cp -a "$STAGE/." "$TARGET/"
+fi
+
+# 裁剪历史备份：仅保留最近 KEEP 份；删除失败只警告、不中断（发布本身已成功）
 PARENT="$(dirname "$TARGET")"
 BASE="$(basename "$TARGET")"
-if [ -d "$PARENT" ]; then
-  find "$PARENT" -maxdepth 1 -mindepth 1 -type d -name "$BASE.bak-*" 2>/dev/null \
-    | sort -r \
-    | tail -n +$((KEEP + 1)) \
-    | while IFS= read -r old; do
-        if [ -n "$old" ] && [ -d "$old" ]; then
-          rm -rf "$old"
-          echo "已清理旧备份：$old"
-        fi
-      done || true
+FAILED=0
+while IFS= read -r old; do
+  [ -n "$old" ] || continue
+  if rm -rf "$old" 2>/dev/null; then
+    echo "已清理旧备份：$old"
+  else
+    echo "警告：旧备份清理失败：$old" >&2
+    FAILED=$((FAILED + 1))
+  fi
+done < <(find "$PARENT" -maxdepth 1 -mindepth 1 -type d -name "$BASE.bak-*" 2>/dev/null | sort -r | tail -n +$((KEEP + 1)))
+if [ "$FAILED" -gt 0 ]; then
+  echo "警告：$FAILED 份旧备份未清理，请手工检查磁盘与权限" >&2
 fi
 
 echo "发布完成：$TARGET（备份：$BACKUP，保留最近 ${KEEP} 份）"
@@ -178,7 +216,8 @@ echo "发布完成：$TARGET（备份：$BACKUP，保留最近 ${KEEP} 份）"
 $remoteContent = $remoteTemplate.
   Replace('__TARGET__', $deploy.RemotePath).
   Replace('__TAG__', $timestamp).
-  Replace('__ZIP__', $remoteZip)
+  Replace('__ZIP__', $remoteZip).
+  Replace('__KEEP__', $keepNum.ToString())
 $remoteContent = $remoteContent -replace "`r`n", "`n"
 [System.IO.File]::WriteAllText($localRemoteScript, $remoteContent, (New-Object System.Text.UTF8Encoding($false)))
 
