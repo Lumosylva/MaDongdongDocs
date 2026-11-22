@@ -123,30 +123,54 @@ Write-Host "`n=== 上传到 ${sshTarget}:$($deploy.RemotePath) ===" -ForegroundC
 
 # 5.1 上传压缩包到远端临时目录
 $remoteZip = "/tmp/$packageName"
-$scpArgs = if ($deploy.SshKey) { @('-i', $deploy.SshKey, $packagePath, "${sshTarget}:$remoteZip") } else { @($packagePath, "${sshTarget}:$remoteZip") }
-& scp @scpArgs
+$scpBaseArgs = if ($deploy.SshKey) { @('-i', $deploy.SshKey) } else { @() }
+
+& scp @scpBaseArgs $packagePath "${sshTarget}:$remoteZip"
 if ($LASTEXITCODE -ne 0) { Write-Error 'SCP 上传失败'; exit $LASTEXITCODE }
 
 # 5.2 远端：备份当前目录 -> 解压新版本 -> 清理临时包
-$remoteScript = @"
-set -e
-TARGET='$($deploy.RemotePath)'
-mkdir -p `"`$TARGET`"
-BACKUP=`"$TARGET.bak-$timestamp`"
-if [ -d `"`$TARGET`" ] && [ "`$`(ls -A `"`$TARGET`" 2>/dev/null)" ]; then
-  cp -r `"`$TARGET`" `"`$BACKUP`"
-fi
-rm -rf `"`$TARGET`"/*
-if command -v unzip >/dev/null 2>&1; then
-  unzip -q -o '$remoteZip' -d `"`$TARGET`"
-else
-  python3 -m zipfile -e '$remoteZip' `"`$TARGET`"
-fi
-rm -f '$remoteZip'
-echo "发布完成：`$TARGET（备份：`$BACKUP）"
-"@
+# 注意：不能把多行 bash 脚本内联拼进 ssh 命令行——PowerShell -> ssh -> bash
+# 多层传参会剥掉内嵌双引号，导致 [ 测试报 "too many arguments"、备份被跳过。
+# 这里先把脚本写成本地临时文件，scp 到远端后用 bash 执行，保证引号与换行原样保留。
+$remoteScriptPath = "/tmp/$packageName.remote.sh"
+$localRemoteScript = Join-Path $env:TEMP "deploy-$timestamp.remote.sh"
 
-& ssh @sshArgs $sshTarget $remoteScript
+$remoteTemplate = @'
+set -euo pipefail
+TARGET='__TARGET__'
+BACKUP="$TARGET.bak-__TAG__"
+ZIP='__ZIP__'
+
+mkdir -p "$TARGET"
+if [ -d "$TARGET" ] && [ -n "$(ls -A "$TARGET" 2>/dev/null)" ]; then
+  cp -a "$TARGET" "$BACKUP"
+fi
+rm -rf "$TARGET"/*
+if command -v unzip >/dev/null 2>&1; then
+  unzip -q -o "$ZIP" -d "$TARGET"
+else
+  python3 -m zipfile -e "$ZIP" "$TARGET"
+fi
+rm -f "$ZIP"
+echo "发布完成：$TARGET（备份：$BACKUP）"
+'@
+
+$remoteContent = $remoteTemplate.
+  Replace('__TARGET__', $deploy.RemotePath).
+  Replace('__TAG__', $timestamp).
+  Replace('__ZIP__', $remoteZip)
+$remoteContent = $remoteContent -replace "`r`n", "`n"
+[System.IO.File]::WriteAllText($localRemoteScript, $remoteContent, (New-Object System.Text.UTF8Encoding($false)))
+
+# 上传并执行远端脚本
+& scp @scpBaseArgs $localRemoteScript "${sshTarget}:$remoteScriptPath"
+if ($LASTEXITCODE -ne 0) { Write-Error '远端脚本上传失败'; exit $LASTEXITCODE }
+
+& ssh @sshArgs $sshTarget "bash $remoteScriptPath"
 if ($LASTEXITCODE -ne 0) { Write-Error '远端解压/发布失败'; exit $LASTEXITCODE }
+
+# 清理远端与本地临时脚本
+& ssh @sshArgs $sshTarget "rm -f $remoteScriptPath"
+Remove-Item $localRemoteScript -Force -ErrorAction SilentlyContinue
 
 Write-Host "`n部署完成。" -ForegroundColor Green

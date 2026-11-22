@@ -32,3 +32,5 @@ server/data/
 
 # 内部执行记录（不纳入版本库）
 .tasks/
+
+.agents/

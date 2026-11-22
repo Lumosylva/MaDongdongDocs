@@ -1,0 +1,47 @@
+{
+  "version": 2,
+  "skills": {
+    "general-spec": {
+      "source": "Lumosylva/lumosylva-skills",
+      "commit": "ba5701e2fb7e266889830faacbd3fe22728bda62",
+      "sourceType": "github",
+      "skillPath": "skills/general-spec/SKILL.md",
+      "computedHash": "e15e254949cf55aee8452b57ea6df2fb5c941370f8cd9265bc66c992d10baa24"
+    },
+    "project-execute": {
+      "source": "Lumosylva/lumosylva-skills",
+      "commit": "ba5701e2fb7e266889830faacbd3fe22728bda62",
+      "sourceType": "github",
+      "skillPath": "skills/project-execute/SKILL.md",
+      "computedHash": "4765f990669168ecd9baf25d2cc5edf429a8ccf72b21238a35a20ac2ffa63140"
+    },
+    "project-innovate": {
+      "source": "Lumosylva/lumosylva-skills",
+      "commit": "ba5701e2fb7e266889830faacbd3fe22728bda62",
+      "sourceType": "github",
+      "skillPath": "skills/project-innovate/SKILL.md",
+      "computedHash": "e8b7099a35ec21643977f4ced9c5b42bf90724944010bb9c64ea2b4dfae0f1e0"
+    },
+    "project-plan": {
+      "source": "Lumosylva/lumosylva-skills",
+      "commit": "ba5701e2fb7e266889830faacbd3fe22728bda62",
+      "sourceType": "github",
+      "skillPath": "skills/project-plan/SKILL.md",
+      "computedHash": "925c179892b6043e8780db1eeaa09adfb45a8ca820db33914b7ddc9756c98201"
+    },
+    "project-research": {
+      "source": "Lumosylva/lumosylva-skills",
+      "commit": "ba5701e2fb7e266889830faacbd3fe22728bda62",
+      "sourceType": "github",
+      "skillPath": "skills/project-research/SKILL.md",
+      "computedHash": "793f8380020c0bc000406a0d1dd558e488304d4b229716f186241dddf00c410b"
+    },
+    "project-review": {
+      "source": "Lumosylva/lumosylva-skills",
+      "commit": "ba5701e2fb7e266889830faacbd3fe22728bda62",
+      "sourceType": "github",
+      "skillPath": "skills/project-review/SKILL.md",
+      "computedHash": "11ef22fb0fb52bb3b42bb4874e74c8d67d3f48c9f4b11ddd9482b2a8b617d71c"
+    }
+  }
+}
