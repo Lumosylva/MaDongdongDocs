@@ -155,3 +155,158 @@ html.dark .VPHome::before {
   }
 }
 
+
+/* ---------- 首页 hero：文章统计条 ---------- */
+.hero-stats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  color: var(--vp-c-text-2);
+}
+
+.hero-stats li {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+}
+
+.hero-stats strong {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--vp-c-brand-1);
+  font-variant-numeric: tabular-nums;
+}
+
+.hero-stats .sep {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--vp-c-text-3) 60%, transparent);
+  align-self: center;
+}
+
+/* ---------- 首页：最近更新 ---------- */
+.recent-posts {
+  max-width: 1248px;
+  margin: 56px auto 72px;
+  padding: 0 48px;
+}
+
+.recent-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.recent-title {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--vp-c-text-1);
+}
+
+.recent-hint {
+  font-size: 12px;
+  color: var(--vp-c-text-3);
+}
+
+.recent-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--vp-c-bg-soft);
+}
+
+.recent-item {
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  padding: 13px 18px;
+  border-bottom: 1px solid var(--vp-c-divider);
+  text-decoration: none;
+  color: var(--vp-c-text-1);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.recent-list li:last-child .recent-item {
+  border-bottom: 0;
+}
+
+.recent-date {
+  font-family: var(--vp-font-family-mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--vp-c-text-3);
+}
+
+.recent-name {
+  font-size: 14px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.recent-chip {
+  padding: 2px 9px;
+  border: 1px solid color-mix(in srgb, var(--vp-c-brand-1) 28%, var(--vp-c-divider));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--vp-c-brand-1) 8%, transparent);
+  font-size: 11px;
+  line-height: 18px;
+  color: var(--vp-c-brand-1);
+  white-space: nowrap;
+}
+
+@media (hover: hover) {
+  .recent-item:hover {
+    background: color-mix(in srgb, var(--vp-c-brand-1) 6%, transparent);
+  }
+
+  .recent-item:hover .recent-name {
+    color: var(--vp-c-brand-1);
+  }
+}
+
+/* 窄屏：标题独占一行，日期与分类落到第二行 */
+@media (max-width: 640px) {
+  .recent-item {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'name chip'
+      'date chip';
+    row-gap: 4px;
+    padding: 12px 14px;
+  }
+
+  .recent-name {
+    grid-area: name;
+    white-space: normal;
+  }
+
+  .recent-date {
+    grid-area: date;
+  }
+
+  .recent-chip {
+    grid-area: chip;
+    align-self: center;
+  }
+}
+

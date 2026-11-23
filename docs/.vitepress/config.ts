@@ -5,6 +5,103 @@ import {
   pagefindPlugin,
   chineseSearchOptimize
 } from 'vitepress-plugin-pagefind'
+import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { execFileSync } from 'node:child_process'
+
+/**
+ * 首页「最近更新」与「文章统计」的数据源。
+ *
+ * 构建时扫描 docs 下的 Markdown，取首个 H1 作标题、取 git 最后提交日期作更新时间
+ * （没有 git 记录时退回文件 mtime），再通过虚拟模块 `virtual:recent-posts`
+ * 交给首页组件，避免浏览器端发请求、也不必手工维护文章清单。
+ *
+ * 注意：文件增删需要重启 docs:dev 才会反映到这份清单（构建不受影响）。
+ */
+type RecentPost = {
+  title: string
+  url: string
+  date: string
+  section: string
+  lang: 'zh' | 'en'
+}
+
+const docsRoot = fileURLToPath(new URL('..', import.meta.url))
+
+const titleOf = (content: string) => {
+  const match = /^#\s+(.+)$/m.exec(content)
+  return match ? match[1].trim() : ''
+}
+
+const gitDateOf = (file: string) => {
+  try {
+    // 构建环境必须有 git（VitePress 的 lastUpdated 同样依赖它）
+    const out = execFileSync(
+      'git',
+      ['log', '-1', '--format=%cs', '--', file],
+      { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }
+    ).trim()
+    if (/^\d{4}-\d{2}-\d{2}$/.test(out)) return out
+  } catch {
+    // git 不可用、文件未提交等情况，退回文件时间
+  }
+  return fs.statSync(file).mtime.toISOString().slice(0, 10)
+}
+
+const collectPosts = (dir: string, acc: RecentPost[] = []): RecentPost[] => {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    if (entry.name.startsWith('.') || entry.name === 'node_modules') continue
+    const full = path.join(dir, entry.name)
+    if (entry.isDirectory()) {
+      collectPosts(full, acc)
+      continue
+    }
+    if (!entry.name.endsWith('.md')) continue
+
+    const rel = path.relative(docsRoot, full).split(path.sep).join('/')
+    // 两个语言首页本身不是文章
+    if (rel === 'index.md' || rel === 'en/index.md') continue
+
+    const content = fs.readFileSync(full, 'utf8')
+    const title = titleOf(content)
+    if (!title) continue
+
+    const lang: RecentPost['lang'] = rel.startsWith('en/') ? 'en' : 'zh'
+    const segments = rel.split('/')
+    // 英文内容在 docs/en/ 下，专栏名要跳过语言目录，否则所有英文页都会归到 "en"
+    const section = (lang === 'en' ? segments[1] : segments[0]).replace(/\.md$/, '')
+    const routePath = ('/' + segments.join('/'))
+      .replace(/index\.md$/, '')
+      .replace(/\.md$/, '')
+
+    acc.push({
+      title,
+      url: routePath,
+      date: gitDateOf(full),
+      section,
+      lang
+    })
+  }
+  return acc
+}
+
+const recentPosts = collectPosts(docsRoot).sort((a, b) => (a.date < b.date ? 1 : -1))
+
+const recentPostsPlugin = {
+  name: 'recent-posts-data',
+  resolveId(id: string) {
+    if (id === 'virtual:recent-posts') return '\0virtual:recent-posts'
+    return null
+  },
+  load(id: string) {
+    if (id === '\0virtual:recent-posts') {
+      return `export default ${JSON.stringify(recentPosts)}`
+    }
+    return null
+  }
+}
+
 
 // Mermaid 组件需要在根节点主题 class 变化时重绘图表。上游当前监听根节点所有属性，
 // autosize 在删除 textarea 内容时改写 html.style.scrollBehavior，会误触发图表重绘，
@@ -256,6 +353,7 @@ export default withMermaid(
       },
       plugins: [
         mermaidThemeObserverFilter,
+        recentPostsPlugin,
         pagefindPlugin({
           // manual：索引生成与资源加载由本站脚本/构建命令接管（见 head 脚本与 docs:build）
           manual: true,

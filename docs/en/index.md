@@ -17,15 +17,21 @@ hero:
 
 features:
   - title: Java
+    icon: { src: /icons/java.svg, alt: "Java icon" }
     details: Notes on Java language fundamentals, collections, concurrency, JVM and more.
     link: /en/java/
   - title: Spring Boot
+    icon: { src: /icons/spring-boot.svg, alt: "Spring Boot icon" }
     details: Framework core, auto-configuration, web layer, data access and engineering practice.
     link: /en/spring-boot/
   - title: Database
+    icon: { src: /icons/database.svg, alt: "Database icon" }
     details: Notes on relational databases, SQL, indexes, transactions and performance tuning.
     link: /en/database/
   - title: Software Testing
+    icon: { src: /icons/software-testing.svg, alt: "Software Testing icon" }
     details: Functional Testing、Integration Testing、Performance Testing、Regression Testing.
     link: /en/software-testing/
 ---
+
+
