@@ -5,8 +5,10 @@ hero:
   name: 马东东的技术教程
   tagline: 技术让生活更美好
   image:
-    src: /logo.svg
-    alt: 站点 Logo
+    src: /hero-programmer.png
+    alt: 程序员头像
+    width: 320
+    height: 320
   actions:
     - theme: brand
       text: Java 基础
