@@ -17,7 +17,7 @@ import { execFileSync } from 'node:child_process'
  * （没有 git 记录时退回文件 mtime），再通过虚拟模块 `virtual:recent-posts`
  * 交给首页组件，避免浏览器端发请求、也不必手工维护文章清单。
  *
- * 注意：文件增删需要重启 docs:dev 才会反映到这份清单（构建不受影响）。
+ * docs:dev 下修改 markdown（含改标题、增删文章）会自动失效重算，无需重启。
  */
 type RecentPost = {
   title: string
@@ -86,19 +86,42 @@ const collectPosts = (dir: string, acc: RecentPost[] = []): RecentPost[] => {
   return acc
 }
 
-const recentPosts = collectPosts(docsRoot).sort((a, b) => (a.date < b.date ? 1 : -1))
+// 每次读取都重新扫描，这样 markdown 改动后（dev 下模块失效重载）标题与日期都是新的
+const getRecentPosts = () =>
+  collectPosts(docsRoot).sort((a, b) => (a.date < b.date ? 1 : -1))
+
+const RECENT_POSTS_ID = '\0virtual:recent-posts'
 
 const recentPostsPlugin = {
   name: 'recent-posts-data',
   resolveId(id: string) {
-    if (id === 'virtual:recent-posts') return '\0virtual:recent-posts'
+    if (id === 'virtual:recent-posts') return RECENT_POSTS_ID
     return null
   },
   load(id: string) {
-    if (id === '\0virtual:recent-posts') {
-      return `export default ${JSON.stringify(recentPosts)}`
+    if (id === RECENT_POSTS_ID) {
+      return `export default ${JSON.stringify(getRecentPosts())}`
     }
     return null
+  },
+  // docs:dev 下要能感知 markdown 变化：内容改动让虚拟模块失效重算（标题/日期跟着更新），
+  // 文件新增或删除则整页刷新，避免列表与统计停留在启动时的快照。
+  configureServer(server: any) {
+    const reload = (file: string) => {
+      if (!file.endsWith('.md')) return
+      const mod = server.moduleGraph.getModuleById(RECENT_POSTS_ID)
+      if (mod) server.moduleGraph.invalidateModule(mod)
+      server.ws.send({ type: 'full-reload' })
+    }
+    server.watcher.on('add', reload)
+    server.watcher.on('unlink', reload)
+  },
+  handleHotUpdate(ctx: any) {
+    if (!ctx.file.endsWith('.md')) return
+    const mod = ctx.server.moduleGraph.getModuleById(RECENT_POSTS_ID)
+    if (!mod) return
+    ctx.server.moduleGraph.invalidateModule(mod)
+    return [...ctx.modules, mod]
   }
 }
 
