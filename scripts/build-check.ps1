@@ -55,19 +55,28 @@ if ($externalRefs.Count -gt 0) {
 Write-Host "OK：HTML/CSS 中无外部资源引用，产物可离线发布。"
 
 # 3) 信息展示：JS/其他文件中出现的 URL 主机（多为许可证/注释字符串）
+# 主机名只允许字母、数字、点、横线：压缩 JS 里的模板字符串（如 https://${w}）不是域名，
+# 宽松字符类会把 ${...}、单个字母之类当成主机，制造大量假条目。
 $otherFiles = Get-ChildItem -Recurse -File $distPath -Include *.js, *.svg
 $hosts = @{}
 foreach ($f in $otherFiles) {
   $text = Get-Content $f.FullName -Raw
   if (-not $text) { continue }
-  foreach ($m in [regex]::Matches($text, 'https?://([^/"''\s<>\\)]+)')) {
-    $h = $m.Groups[1].Value
+  foreach ($m in [regex]::Matches($text, 'https?://([A-Za-z0-9][A-Za-z0-9.-]*[A-Za-z0-9])')) {
+    $h = $m.Groups[1].Value.ToLowerInvariant()
+    # 至少两段（形如 a.bc）才算主机名，排除单段碎片与残留占位符
+    if ($h -notmatch '^[a-z0-9-]+(\.[a-z0-9-]+)+$') { continue }
     if ($hosts.ContainsKey($h)) { $hosts[$h]++ } else { $hosts[$h] = 1 }
   }
 }
 if ($hosts.Count -gt 0) {
-  Write-Host "`nJS/SVG 中夹带的 URL 主机（信息项，不发起请求）："
-  $hosts.GetEnumerator() | Sort-Object Count -Descending | Format-Table Count, Name -AutoSize
+  Write-Host "`nJS/SVG 中夹带的 URL 主机（信息项，不发起请求，共 $($hosts.Count) 个）："
+  # 哈希表枚举出来是 DictionaryEntry（Key/Value），直接 Format-Table Count/Name 会得到空列
+  $hostList = $hosts.GetEnumerator() | ForEach-Object {
+    [pscustomobject]@{ Host = $_.Key; Count = $_.Value }
+  }
+  $hostList | Sort-Object -Property @{ Expression = 'Count'; Descending = $true }, Host |
+    Format-Table -AutoSize
 }
 
 exit 0
