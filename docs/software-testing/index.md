@@ -4,7 +4,7 @@
 >
 > By [IBM Think](https://www.ibm.com/cn-zh/think/topics/software-testing)
 
-![Abstract blue sphere in spiral structure](/images/software-testing/software-testing-overview.png)
+![software-testing-overview](/images/software-testing/software-testing-overview.webp)
 
 ## 软件测试定义
 

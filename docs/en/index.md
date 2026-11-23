@@ -25,4 +25,7 @@ features:
   - title: Database
     details: Notes on relational databases, SQL, indexes, transactions and performance tuning.
     link: /en/database/
+  - title: Software Testing
+    details: Functional Testing、Integration Testing、Performance Testing、Regression Testing.
+    link: /en/software-testing/
 ---

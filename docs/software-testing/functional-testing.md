@@ -4,7 +4,7 @@
 >
 > By [IBM Think](https://www.ibm.com/cn-zh/think/topics/functional-testing)
 
-![Modern laptop and monitor with pink screens](/images/software-testing/functional-testing.png)
+![functional-testing](/images/software-testing/functional-testing.webp)
 
 ## 功能测试定义
 

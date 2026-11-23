@@ -4,7 +4,7 @@
 >
 > By [IBM Think](https://www.ibm.com/cn-zh/think/topics/integration-testing)
 
-![Laptop in futuristic server room with blue lights](/images/software-testing/integration-testing.png)
+![integration-testing](/images/software-testing/integration-testing.webp)
 
 ## 集成测试的定义
 

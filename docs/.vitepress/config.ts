@@ -138,13 +138,24 @@ export default withMermaid(
                 items: [
                   { text: '概述', link: '/software-testing/' },
                   { text: '功能测试', link: '/software-testing/functional-testing' },
-                  { text: '集成测试', link: '/software-testing/integration-testing' }
+                  { text: '集成测试', link: '/software-testing/integration-testing' },
+                  { text: '性能测试', link: '/software-testing/performance-testing' },
+                  { text: '回归测试', link: '/software-testing/regression-testing' }
                 ]
               }
             ]
           },
 
           outline: { level: [2, 3] },
+
+          // 404 页文案：VitePress 会生成 dist/404.html，由 Nginx error_page 指过去。
+          notFound: {
+            code: '404',
+            title: '页面不存在',
+            quote: '这个地址没有对应的文章。可能是链接过期，或者拼写有误。',
+            linkLabel: '返回首页',
+            linkText: '返回首页'
+          },
 
           footer: {
             message: '技术让生活更美好',
@@ -193,6 +204,18 @@ export default withMermaid(
                 items: [{ text: 'Overview', link: '/en/database/' }]
               }
             ],
+            '/en/software-testing/': [
+              {
+                text: 'Software Testing',
+                items: [
+                  { text: 'Overview', link: '/en/software-testing/' },
+                  { text: 'Functional Testing', link: '/en/software-testing/functional-testing' },
+                  { text: 'Integration Testing', link: '/en/software-testing/integration-testing' },
+                  { text: 'Performance Testing', link: '/en/software-testing/performance-testing' },
+                  { text: 'Regression Testing', link: '/en/software-testing/regression-testing' }
+                ]
+              }
+            ],
             '/en/guide/': [
               {
                 text: 'Site Guide',
@@ -202,6 +225,15 @@ export default withMermaid(
           },
 
           outline: { level: [2, 3] },
+
+          // 英文侧 404 文案，与 root 的 notFound 一一对应。
+          notFound: {
+            code: '404',
+            title: 'PAGE NOT FOUND',
+            quote: 'This page does not exist. The link may be outdated, or the URL mistyped.',
+            linkLabel: 'Back to home',
+            linkText: 'Back to home'
+          },
 
           footer: {
             message: 'Technology makes life better',
