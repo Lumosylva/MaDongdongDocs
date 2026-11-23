@@ -5,7 +5,7 @@ hero:
   name: 马东东的技术教程
   tagline: 技术让生活更美好
   image:
-    src: /hero-programmer.png
+    src: /hero-programmer.svg
     alt: 程序员头像
     width: 320
     height: 320

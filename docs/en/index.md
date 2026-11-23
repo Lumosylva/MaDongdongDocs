@@ -5,7 +5,7 @@ hero:
   name: Ma Dongdong Tech Notes
   tagline: Technology makes life better
   image:
-    src: /hero-programmer.png
+    src: /hero-programmer.svg
     alt: Programmer avatar
     width: 320
     height: 320
