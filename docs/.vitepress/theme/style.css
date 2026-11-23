@@ -1,0 +1,33 @@
+/* 脚注（markdown-it-footnote 生成的 .footnotes / .footnote-ref）
+   默认主题没有对应样式，这里补最少的排版，颜色走 VitePress CSS 变量以适配明暗模式。 */
+.footnotes-sep {
+  margin-top: 32px;
+  border: 0;
+  border-top: 1px solid var(--vp-c-divider);
+}
+
+.footnotes {
+  margin-top: 16px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--vp-c-text-2);
+}
+
+.footnotes-list {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+
+.footnote-item p {
+  margin: 4px 0;
+}
+
+.footnote-ref a {
+  font-size: 0.75em;
+  text-decoration: none;
+}
+
+.footnote-backref {
+  margin-left: 4px;
+  text-decoration: none;
+}

@@ -25,4 +25,7 @@ features:
   - title: 数据库
     details: 关系型数据库、SQL、索引、事务与性能优化笔记。
     link: /database/
+  - title: 软件测试
+    details: 功能测试、集成测试、性能测试、回归测试。
+    link: /software-testing/
 ---

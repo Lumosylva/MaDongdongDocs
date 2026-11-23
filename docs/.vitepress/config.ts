@@ -1,5 +1,6 @@
 import { defineConfig } from 'vitepress'
 import { withMermaid } from 'vitepress-plugin-mermaid'
+import footnote from 'markdown-it-footnote'
 import {
   pagefindPlugin,
   chineseSearchOptimize
@@ -80,7 +81,11 @@ export default withMermaid(
       // LaTeX 公式（markdown-it-mathjax3，本地渲染，不依赖外部 CDN）
       math: true,
       // 代码块显示行号
-      lineNumbers: true
+      lineNumbers: true,
+      // 脚注：[^1] 引用 + 页面底部 [^1]: 定义；VitePress 默认的 markdown-it 不含该语法
+      config: (md) => {
+        md.use(footnote)
+      }
     },
 
     locales: {
@@ -98,6 +103,7 @@ export default withMermaid(
             { text: 'Java', link: '/java/' },
             { text: 'Spring Boot', link: '/spring-boot/' },
             { text: '数据库', link: '/database/' },
+            { text: '软件测试', link: '/software-testing/' },
             { text: '写作指南', link: '/guide/writing' }
           ],
 
@@ -124,6 +130,16 @@ export default withMermaid(
               {
                 text: '本站指南',
                 items: [{ text: '写作规范', link: '/guide/writing' }]
+              }
+            ],
+            '/software-testing/': [
+              {
+                text: '软件测试',
+                items: [
+                  { text: '概述', link: '/software-testing/' },
+                  { text: '功能测试', link: '/software-testing/functional-testing' },
+                  { text: '集成测试', link: '/software-testing/integration-testing' }
+                ]
               }
             ]
           },
