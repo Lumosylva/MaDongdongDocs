@@ -1,155 +1,155 @@
-# 什么是性能测试？
+# What is performance testing?
 
-> 发布日期 2026年11月23日 | 更新日期 2026年11月23日
+> Published November 23, 2026 | Updated November 23, 2026
 >
 > By [IBM Think](https://www.ibm.com/cn-zh/think/topics/performance-testing)
 
 ![performance-testing](/images/software-testing/performance-testing.avif)
 
-## 性能测试的定义
+## Definition of performance testing
 
-性能测试通过施加不同量级的负载来评估系统或应用的性能表现。
+Performance testing evaluates the performance of a system or application by applying loads of varying magnitude.
 
-关键标准包括速度（系统运行速率）、稳定性（无崩溃运行能力）、可扩展性（负载平滑增加时的处理能力）和响应能力（对用户指令的反馈速度）。
+Key criteria include speed (how fast the system runs), stability (its ability to run without crashing), scalability (its capacity to handle smoothly increasing load), and responsiveness (how quickly it reacts to user commands).
 
-软件性能是计算机使用的底层支撑，性能缺陷可能摧毁企业提升用户体验的所有努力。若开发者未充分监管性能测试或测试频率不足，便会引入性能瓶颈。 这将导致系统即使在常规流量时段也难以处理预期负载。当突发峰值使用期产生额外需求时，问题会更加严峻。
+Software performance underpins everyday computer use, and performance defects can undo every effort a company makes to improve the user experience. If developers supervise performance testing inadequately, or test too infrequently, they introduce performance bottlenecks. The system then struggles to handle the expected load even during ordinary traffic periods—and the problem becomes far more severe when sudden peaks add extra demand.
 
-此类挑战可能危及企业所有面向公众的运营。 建立持久质量声誉往往需要长期积累。然而，当公众开始质疑某个系统或应用程序是否具备稳定可靠的操作性能时，它们可能遭受迅速且永久性的损害。终端用户的耐心正日益成为稀缺资源。因此，当性能问题成为焦点时，往往意味着企业声誉已岌岌可危，事关重大。
+Such challenges can jeopardize every public-facing operation a company runs. Building a durable reputation for quality usually takes a long time. Yet that reputation can suffer quickly and permanently once the public begins to question whether a system or application operates reliably. End-user patience is becoming an increasingly scarce resource. So by the time performance problems take center stage, a company's reputation is often already at stake and the stakes are high.
 
-## 性能测试的六个步骤
+## Six steps of performance testing
 
-让我们首先定义大多数性能测试场景中使用的方法。六个多部分步骤定义了典型的性能测试过程。
+Let's start by defining the method used in most performance testing scenarios. Six multipart steps define a typical performance testing process.
 
-### 1. 定义性能标准与需求
+### 1. Define performance criteria and requirements
 
-性能测试过程的第一步是设置有用的参数，例如概述应用程序的性能目标。
+The first step is to set useful parameters, such as outlining the application's performance goals.
 
-然后确立可接受的性能标准（例如响应时间、吞吐量、资源利用率和错误率）。
+Then establish acceptable performance criteria—response time, throughput, resource utilization, and error rates, for example.
 
-此阶段也是人员确定关键绩效指标 (KPI) 以支持性能要求和业务优先事项的阶段。
+This is also the stage where people identify key performance indicators (KPIs) to support performance requirements and business priorities.
 
-### 2. 设计和规划测试
+### 2. Design and plan the tests
 
-并非所有测试都适用于每种场景。开发者或其他测试人员必须明确测试的分析目标。
+Not every test suits every scenario. Developers or other testers must clarify the analytical goal of the test.
 
-首先，他们要确定主要使用场景的范围，并设计能反映真实用户交互的测试用例。后续步骤是指定测试过程中将使用的测试数据和工作负载。
+First, they scope the primary use cases and design test cases that reflect real user interaction. The next step is to specify the test data and workload that will be used during testing.
 
-锁定这些变量后，测试人员需选择性能测试工具、测试脚本和技术方案。此步骤包括设置质量门禁——即通过代码质量阈值控制后续生产环节的准入机制。
+With those variables locked down, testers choose performance testing tools, test scripts, and techniques. This step includes setting up quality gates—thresholds that control admission to later production stages based on code quality.
 
-性能测试还需检验带宽能力，确保数据传输速率足以处理工作负载流量。
+Performance testing also checks bandwidth capacity, confirming that data transfer rates are sufficient to handle workload traffic.
 
-### 3. 建立测试环境
+### 3. Establish the test environment
 
-在性能测试过程正式开始之前，必须采取最后一步。测试人员构建一个准确模拟系统真实生产环境的测试环境，然后确认被测软件应用程序 (AUT) 已在测试环境中部署。
+Before the performance testing process formally begins, one last step is required. Testers build a test environment that accurately simulates the system's real production environment, then confirm that the application under test (AUT) has been deployed in it.
 
-最后的准备工作包括集成监控工具，以捕获系统在测试期间生成的性能指标。
+Final preparations include integrating monitoring tools to capture the performance metrics the system generates during testing.
 
-### 4. 执行测试
+### 4. Execute the tests
 
-现在明确定义了测试参数，是时候执行性能测试了。测试人员或测试自动化过程运行已选择的测试场景，并将这些测试与性能测试工具一起使用。
+Now that test parameters are clearly defined, it's time to execute. Testers or an automated testing process run the selected test scenarios together with the performance testing tools.
 
-测试人员通常会实时监控系统性能，以便了解吞吐量、响应时间和资源使用情况。在整个测试过程中，测试人员都要监控系统是否出现性能瓶颈或其他与性能有关的异常情况（反映在测试指标中）。
+Testers usually monitor system performance in real time to understand throughput, response time, and resource usage. Throughout the test, they watch for performance bottlenecks or other performance-related anomalies as reflected in the test metrics.
 
-### 5. 研究结果
+### 5. Study the results
 
-接下来，测试人员评估在测试过程中收集的性能数据。他们仔细研究收集到的数据并寻找需要改进的性能领域。
+Next, testers evaluate the performance data collected during testing. They study the data carefully and look for areas of performance that need improvement.
 
-然后，测试人员将这些测试结果与测试过程第一步中建立的性能基准进行比较。通过这种比较，测试人员可以看到测试结果与预期性能出现偏差以及可能出现瓶颈的位置。
+Testers then compare those results against the performance baselines established in the first step. This comparison shows where results deviate from expected performance and where bottlenecks are likely to appear.
 
-### 6. 优化、测试、重复
+### 6. Optimize, test, repeat
 
-通过分析测试数据发现性能问题后，开发人员使用代码在系统中对其进行更新。他们使用代码优化、资源升级或配置更改来缓解上述性能问题。
+After analysis of the test data reveals performance issues, developers update the system in code. They use code optimization, resource upgrades, or configuration changes to mitigate those issues.
 
-实施更改后，开发人员会重复软件测试序列，以确认他们是否成功应用了更改。开发人员重复这些过程，直到性能结果与定义的基准一致。
+Once changes are in place, developers repeat the software testing sequence to confirm the changes were applied successfully, iterating until performance results match the defined baselines.
 
-## 谁从性能测试中受益？
+## Who benefits from performance testing?
 
-性能测试深入系统“底层”检测输出效能，因此软件开发团队成为最常使用该方法的群体。第一受益群体包括直接参与开发过程的专业人员：开发者、质量保障 (QA) 工程师和 DevOps 团队。各方从性能测试中各获所需：
+Performance testing probes deep "under the hood" of a system to check output effectiveness, which is why software development teams are the most frequent users of this method. The first group of beneficiaries includes professionals directly involved in the development process: developers, quality assurance (QA) engineers, and DevOps teams. Each party gets what it needs from performance testing:
 
-- **开发人员**使用性能测试在软件开发生命周期 (SDLC)的早期发现性能问题，以便确定开发变更的优先级，并更有效地实施它们。
+- **Developers** use performance testing to find performance issues early in the software development lifecycle (SDLC), so they can prioritize development changes and implement them more effectively.
 
-- **QA 团队**依赖 性能测试评估应用在不同负载下的运行速度、功能稳定性和可扩展性是否达标。
+- **QA teams** rely on performance testing to assess whether an application's speed, functional stability, and scalability meet the bar under different loads.
 
-- **DevOps** 开发运维工作人员在持续集成和持续交付 (CD/CD) 管道中操作时可以结合性能测试，以自动验证开发人员的每项更改都不会降低系统行为性能。
+- **DevOps** staff can combine performance testing with continuous integration and continuous delivery (CI/CD) pipelines to automatically verify that each change a developer makes does not degrade system behavior.
 
-下一组用户不是开发人员，但他们仍然在基层工作，系统组件管理是他们工作的主要组成部分：
+The next group are not developers, but they still work close to the foundation, where managing system components is a major part of the job:
 
-- **项目经理**使用性能测试来评估风险并衡量系统变更可能产生的系统影响。
+- **Project managers** use performance testing to assess risk and measure the potential system impact of changes.
 
-- **首席技术官 (CTO)** 或具有类似职责的员工需要绩效测试，以帮助他们确定如何将不断变化的需求转化为长期增长。
+- **Chief technology officers (CTOs)** or employees with similar responsibilities need performance testing to help them work out how to translate changing requirements into long-term growth.
 
-- **公司所有者**致力于保护收入流。性能测试证实加载时间足够快，并且无响应的客户服务不会影响收入流程。
+- **Company owners** work to protect revenue streams. Performance testing confirms that load times are fast enough and that unresponsive customer service will not disrupt revenue flow.
 
-但进行性能测试的不仅仅是公司管理层。许多组织和企业也经常在各种规模的公司中出于各种目的使用性能测试：
+But it isn't only company management that runs performance tests. Many organizations and businesses use performance testing across companies of all sizes and for a variety of purposes:
 
-- 频繁经历高流量周期的**大型企业** 依赖性能测试来确认其应用能否承受重负荷工作。这种方法对重度依赖大型在线用户平台的企业尤为重要。
+- **Large enterprises** that frequently experience high-traffic cycles rely on performance testing to confirm their applications can handle heavy workloads. This method matters most to businesses that depend heavily on large online user platforms.
 
-- **小型企业（及初创公司）**需将性能测试纳入增长规划。这些企业通过性能测试预警可能阻碍其成功发展的未来瓶颈。
+- **Small businesses (and startups)** should build performance testing into their growth planning. It warns them about future bottlenecks that could hold back their success.
 
-- **任何规模的企业**在准备发布新应用程序时，都应明智地采用性能测试来预测实际运营场景中的问题。这一点同样适用于进行重要 IT 系统变更的公司。
+- **Companies of any size** preparing to release a new application would be wise to use performance testing to predict problems in real operating scenarios. The same applies to companies making significant IT system changes.
 
-- **金融机构**肩负着巨大的责任，并面临严格的行业监管。此类企业通常会使用性能测试来帮助自己维持基准标准，尤其是在高交易量时段内。
+- **Financial institutions** carry enormous responsibility and face strict industry regulation. They typically use performance testing to help maintain baseline standards, especially during periods of high transaction volume.
 
-## 性能测试类型
+## Types of performance testing
 
-开发者通过不同类型的性能测试获取特定结果数据，以支持特定测试策略。以下是最主要的测试类型。
+Developers use different types of performance testing to obtain specific data that supports a specific testing strategy. These are the main types.
 
-### 负载测试
+### Load testing
 
-负载测试显示系统在预期负载下的运行表现。其目标是揭示系统在正常工况下，面对常规规模工作负载及平均并发用户数时的行为特征。
+Load testing shows how a system performs under the expected load. Its goal is to reveal how the system behaves under normal conditions, with regular workloads and average numbers of concurrent users.
 
-**示例**：对于电子商务网站，测试人员模拟网站用户，完成购买商品、将产品放入购物车并支付购买费用的步骤。
+**Example:** for an e-commerce site, testers simulate site users completing steps such as browsing products, adding items to a cart, and paying for a purchase.
 
-### 可扩展性测试
+### Scalability testing
 
-负载测试表明系统能否支持常规负载条件。可扩展性通过增加数据量或要处理的用户负载来使该系统承受压力。它显示一个系统是否能在加速后继续提供服务。
+Load testing shows whether a system can support regular load conditions. Scalability puts the system under stress by increasing the volume of data or the user load it must handle, showing whether it can keep serving as it scales up.
 
-**示例**：在垂直扩展中，开发人员可能会增加数据库服务器的 CPU 和内存，使其能够接纳更大量的数据查询。
+**Example:** in vertical scaling, developers might add CPU and memory to a database server so it can accept a larger volume of data queries.
 
-### 压力测试
+### Stress testing
 
-压力测试类似于潜艇机组执行的极限下潜测试。通过将系统推至已知运行极限——甚至超越极限——来精确测定系统在达到崩溃点前的最大承受能力。
+Stress testing resembles the crush-depth tests a submarine crew performs. By pushing the system to its known operating limits—and beyond them—it precisely measures the maximum the system can bear before reaching its breaking point.
 
-**示例**：故障转移测试是压力测试的极端形式。其目标是通过模拟组件故障来检验系统恢复运行所需的时间。
+**Example:** failover testing is an extreme form of stress testing. Its goal is to test how long a system takes to resume operation by simulating a component failure.
 
-### 峰值测试
+### Spike testing
 
-此类测试针对用户流量或数据传输量突然急剧飙升的场景。系统必须在维持常规操作的同时消化各种突变。
+This type targets sudden, sharp surges in user traffic or data transfer volume. The system must absorb the spike while maintaining normal operation.
 
-**示例**：运营网站的公司不仅需要为中断做好准备，还需要为网站恢复上线后试图同时访问网站的激增用户量做好准备。他们还必须评估系统是否能够处理突然增加的需求。峰值测试可以计算出进展的顺利程度。
+**Example:** a company operating a website must prepare not only for outages but also for the surge of users trying to reach the site simultaneously once it comes back online. It must also assess whether the system can handle the sudden increase in demand. Spike testing measures how smoothly that goes.
 
-### 容量测试
+### Capacity testing
 
-性能测试通常关注用户流量。而容量测试 则聚焦系统处理海量数据的能力。能否完整处理数据并提供无损耗的数据存储？
+Performance testing usually focuses on user traffic, while capacity testing focuses on the system's ability to handle massive volumes of data. Can it process the data completely and store it without loss?
 
-**示例**：医疗机构需维护海量患者信息，且法律要求其能随时调取患者记录及相关医疗数据。持续涌入的数据可能使系统过载。容量测试可验证系统能否持续承接增量数据。
+**Example:** healthcare organizations must maintain enormous amounts of patient information, and the law requires them to retrieve patient records and related medical data at any time. A continuous influx of data can overload the system. Capacity testing verifies whether it can sustain incremental data intake over time.
 
-### 耐久性测试
+### Endurance testing
 
-可将其视为长期性能测试。耐力测试（亦称浸泡测试）旨在捕捉长期运行后出现的数据损坏和内存泄漏等隐患。
+Think of it as long-haul performance testing. Endurance testing (also called soak testing) aims to catch hidden problems such as data corruption and memory leaks that appear after prolonged operation.
 
-**示例**：社交媒体平台全天候运行，持续使用可能会给平台稳定性、数据存储和用户帐户带来问题。耐久性测试可以让您了解当前的运营情况以及未来性能的指标。
+**Example:** social media platforms run around the clock, and sustained use can create problems for platform stability, data storage, and user accounts. Endurance testing shows you how the platform is operating today and gives you indicators for future performance.
 
-## 广泛使用的性能测试工具
+## Widely used performance testing tools
 
-开发者与测试人员可从多种性能测试工具中选择。以下为最流行的两款：
+Developers and testers can choose from a wide range of performance testing tools. These are the two most popular:
 
-- **JMeter**：Apache 开发的 JMeter 是备受欢迎的开源性能测试软件。该工具通过线程组生成虚拟用户模拟真实流量场景（包括用户过载情况）。这些极端场景被定义为被测系统 (SUT) 研究。 JMeter 提供关键测试指标：测量 SUT 响应速度的响应时间。还记录请求失败率的错误率，以及吞吐量，即 SUT 在特定时间段内能够处理的请求数量。
+- **JMeter**: developed by Apache, JMeter is a widely used open-source performance testing tool. It generates virtual users through thread groups to simulate real traffic scenarios, including user overload. These extreme scenarios are defined as studies of the system under test (SUT). JMeter reports key metrics: response time, which measures how fast the SUT responds; error rate, which records the proportion of failed requests; and throughput, the number of requests the SUT can handle in a given period.
 
-- **LoadRunner**：与 JMeter 类似，LoadRunner 能创建海量虚拟用户。然后，LoadRunner 为数百万虚拟用户生成模拟活动（如组件间消息传递或用户界面交互）。这些交互行为存储于 LoadRunner 生成的测试脚本中。据报道，到 2025 年（届时），将有超过 2600 家企业采用 Micro Focus LoadRunner 进行性能测试与质量保障活动。
+- **LoadRunner**: like JMeter, LoadRunner can create massive numbers of virtual users. It then generates simulated activity for those users—such as message passing between components or user interface interaction—and stores those interactions in test scripts. LoadRunner reportedly reached more than 2,600 enterprises using Micro Focus LoadRunner for performance testing and quality assurance by 2025.
 
-- **RoadRunner**：“PHP”曾经代表“个人主页”，但后来演变成“超文本预处理器”。它现在指服务器端脚本语言（意味着开发人员在服务器而不是客户端 Web 浏览器上执行代码）。开源 RoadRunner（不要与发音相似的 LoadRunner 混淆）可用作 PHP 应用程序服务器和进程管理器。它消除了对启动加载时间的需求并限制了延迟，从而简化了应用程序性能。RoadRunner 为并发运行的 Java 程序提供一个动态分析框架。RoadRunner 提供了一个评估事件流的应用程序编程接口 (API)。
+- **RoadRunner**: "PHP" once stood for "personal home page" and later became "hypertext preprocessor." It now refers to a server-side scripting language, meaning developers execute code on the server rather than in the client web browser. The open-source RoadRunner (not to be confused with the similarly pronounced LoadRunner) can serve as a PHP application server and process manager. It eliminates the need for startup load time and limits latency, simplifying application performance. RoadRunner provides a dynamic analysis framework for Java programs running concurrently, along with an application programming interface (API) for evaluating event streams.
 
-## AI 对性能测试的影响
+## How AI is affecting performance testing
 
-与几乎所有与计算机相关的问题一样，人工智能 (AI) 现在正在将软件测试的效率推向全新的水平。它使整体性能测试过程更快、更准确且更容易实现自动化。
+As with nearly everything related to computing, artificial intelligence (AI) is now pushing the efficiency of software testing to entirely new levels, making the overall performance testing process faster, more accurate, and easier to automate.
 
-具体来说，AI 可以采用更短的测试周期，从而缩短运行测试所需的时间。通过 AI 极精细的准确性，它能够注意到人类测试人员无法察觉的更细微的性能变化。此外，通过预测性分析，AI 可以评估操作趋势和历史数据，并预测瓶颈接下来可能在何时何处出现。它还可以充分利用该预测系统行为，甚至根据它调整测试参数。
+Specifically, AI can adopt shorter test cycles, reducing the time needed to run tests. With its extremely fine precision, it notices subtler performance variations that human testers cannot perceive. Through predictive analysis, AI can evaluate operating trends and historical data to forecast when and where bottlenecks are likely to appear next—and it can use that prediction to adjust test parameters.
 
-但是，到目前为止，AI 对性能测试做的最重要的事情就是通过启用自动化来大规模地协助其工作。这种自动化的显著特点是，它完全能够运行性能测试流程 - 全部的流程。
+But by far the most important thing AI has done for performance testing is help it at scale by enabling automation. The notable feature of this automation is that it can run the entire performance testing process—the whole thing.
 
-AI 不仅可以实现测试的自动化执行，还可以编写用于执行的测试脚本。此外，它还能在后台解释测试结果，并为补救有问题的情况提供指导。
+AI can not only automate test execution but also write the test scripts used for execution. It can interpret results in the background and provide guidance for remediating problematic situations.
 
-AI 对性能测试最有趣、最有希望的影响之一是人类与 AI 协作的方式被越来越多地采用。这种安排是认识到，人类的本能和知识仍然可以发挥重要作用。事实上，在某些情况下，跟随人类冲动仍然是最高指导原则。
+One of the most interesting and promising effects of AI on performance testing is the growing adoption of human-AI collaboration. This arrangement recognizes that human instinct and knowledge still have an important role to play. In some situations, following human impulse remains the highest guiding principle.
 
-一些专家确信，未来的性能测试依赖于这种混合方法。它将计算机思维和处理能力与人类对上下文和细微差别的感觉相结合。
+Some experts are convinced that future performance testing depends on this hybrid approach, which combines computer thinking and processing power with the human sense of context and nuance.

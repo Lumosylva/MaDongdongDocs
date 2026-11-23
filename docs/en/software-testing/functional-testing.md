@@ -1,121 +1,120 @@
-# 什么是功能测试？
+# What is functional testing?
 
-> 发布日期 2026年11月23日 | 更新日期 2026年11月23日
+> Published November 23, 2026 | Updated November 23, 2026
 >
 > By [IBM Think](https://www.ibm.com/cn-zh/think/topics/functional-testing)
 
 ![functional-testing](/images/software-testing/functional-testing.webp)
 
-## 功能测试定义
+## Functional testing defined
 
-功能测试是一种软件测试方法，用于验证应用程序特性是否根据规定需求按预期运行。
+Functional testing is a type of software testing that validates whether an application's features behave as expected against the specified requirements.
 
-在软件开发中过程中存在多种软件测试类型。每种测试方法都从略有差异的角度出发。功能测试最贴近用户体验概念，其核心关注点是：软件特性是否按预期且符合规定需求正常运行？
+There are many types of software testing within the software development process, and each method approaches the product from a slightly different angle. Functional testing sits closest to the user experience: its core question is whether the software's features actually work as intended and as specified.
 
-作为软件开发生命周期的一部分，软件质量通常需要从多维度进行评估。在功能测试方面，测试人员需要验证基础功能，并确认软件功能是否有效支撑业务需求。涉及的测试执行过程让开发运维团队能够将实际测试结果与预期结果进行比对。
+As part of the software development lifecycle, software quality is typically assessed across multiple dimensions. In functional testing, testers verify the underlying capabilities and confirm that the features effectively support business requirements. The execution this involves lets development and operations teams compare actual test results against expected results.
 
-测试是开发过程的重要组成部分，而功能测试让质量保证团队能够在事实发生前进行质量验证，为其清晰展示工作流在真实启动时的可能运行状态。
+Testing is an essential part of the development process, and functional testing lets quality assurance teams validate quality before the fact, giving them a clear picture of how a workflow may behave when it goes live.
 
-## 功能测试如何运作？
+## How does functional testing work?
 
-根据整体战略中采用的软件测试类型，会重点关注不同的运营要素。功能测试会评估不同软件模块之间的整体兼容性，而这会直接影响其他相关方面，如预期的用户交互以及用户界面的可行性。
+Focus shifts depending on the testing types chosen within an overall strategy. Functional testing assesses overall compatibility between software modules, which directly affects related concerns such as intended user interaction and the feasibility of the user interface.
 
-功能测试提供的测试环境被视为黑匣测试的其中一例，但测试人员无法像白匣测试那样深入了解系统内部运作—而是获得一份“通过/失败”报告，用于判断系统及其管道是否会按预期运行。
+The test environment that functional testing provides is a form of black-box testing: testers cannot peer into internal operation the way white-box testing allows, but instead receive a pass/fail report that indicates whether the system and its pipeline behave as expected.
 
-### 功能测试的六个步骤
+### Six steps of functional testing
 
-功能测试通常遵循包含六个步骤的测试流程：
+Functional testing usually follows a six-step workflow:
 
-1. 确定软件需要执行的各项功能。
-2. 根据功能需求创建输入数据。
-3. 根据功能规格确定预期输出。
-4. 执行测试用例。
-5. 评估实际输出与预期输出的吻合程度。
-6. 判定软件应用程序是否按预期要求正常运行。
+1. Identify the functions the software must perform.
+2. Create input data based on the functional requirements.
+3. Determine expected output from the functional specification.
+4. Execute the test cases.
+5. Evaluate how closely the actual output matches the expected output.
+6. Decide whether the application performs correctly against the requirements.
 
-## 功能测试类型
+## Types of functional testing
 
-正如存在多种软件测试模型一样，功能测试也存在不同类别。其种类繁多，此处仅列举部分类型。功能测试类型涵盖广泛细分领域，以下按字母顺序排列。
+Just as there are many software testing models, functional testing comes in different categories. The list is long, and only some are covered here; these types span a broad set of niches, listed alphabetically below.
 
-### 随机测试
+### Ad hoc testing
 
-在软件测试中，测试人员常在正式测试流程后进行随机测试。这种非正式的探索性测试完全由测试人员的技能与直觉引导。它没有既定结构，而是依靠测试者的本能驱动所采用的测试技术。
+Testers often perform ad hoc testing after the formal testing process. This informal exploratory testing is guided entirely by the tester's skill and intuition. It has no fixed structure and relies on instinct to drive the technique used.
 
-**示例：**“伙伴测试”——开发人员与测试者协同合作改进某个模块或应用程序。在此类随机测试中，通常由测试者发现程序缺陷等待修复项，而开发者专注实施修复。
+**Example:** "buddy testing" — a developer and a tester work together to improve a module or application. In this kind of ad hoc testing, the tester typically identifies defects awaiting fixes, while the developer focuses on implementing them.
 
-### API 测试
+### API testing
 
-应用程序编程接口 (API) 支撑软件开发，并实现不同应用或系统的连接。API 测试确保接口连接点按需运行，同时监控用户权限及通过 API 管理数据的方式。
+Application programming interfaces (APIs) underpin software development and connect different applications or systems. API testing ensures interface connection points behave as needed, and it also monitors user permissions and the way data is managed through APIs.
 
-**例如**：“无界面测试”适用于缺乏用户界面或 UI 数据输入字段的场景。此类情况下，通过与接口服务或应用程序共享输入数据的方式，往往能通过 API 测试实现最佳检测效果。
+**For example:** "headless testing" suits cases that have no user interface or UI input fields. Sharing input data with the interface service or application often yields the best detection through API testing.
 
-### 复杂测试场景
+### Complex test scenarios
 
-许多组织希望其测试过程能真实反映实际用户的体验。对这些企业而言，复杂测试场景能提供所需的精确度，但需指出的是，更高的复杂性需要前期投入更多工作量来执行。
+Many organizations want their testing to mirror the real user experience. For those businesses, complex test scenarios provide the required precision—though greater complexity demands more upfront work to execute.
 
-**例如**：在线订单处理看似是无缝操作，其背后却涉及大量待测试流程——例如商品能否轻松加入购物车、折扣应用等功能能否快速整合、以及交易流程是否顺畅无阻。
+**For example:** online order processing looks seamless, but behind it lies a long chain of flows to test—whether items drop into the cart easily, whether discount logic integrates quickly, and whether checkout runs without friction.
 
-### 集成测试
+### Integration testing
 
-集成测试常与单元测试同步执行，这能带来早期问题发现和更广测试覆盖率等优势。除了确保数据格式匹配外，集成测试还能深入揭示微服务的运行机制与性能表现。
+Integration testing is often run alongside unit testing, which yields earlier defect detection and broader test coverage. Beyond confirming that data formats match, integration testing reveals how microservices operate and perform.
 
-**例如**：假设订单管理系统与某类支付处理模块进行集成，集成测试能预示两个实体间可能发生的故障点，并为开发人员提供早期低成本修复集成问题的解决方案蓝图。
+**For example:** if an order management system integrates with a payment processor, integration testing can predict failure points between the two entities and give developers a low-cost blueprint for fixing integration issues early.
 
-### 回归测试
+### Regression testing
 
-在理想情况下，一旦功能测试通过，就应始终保持通过状态。但这与现实并不相符——软件开发中，开发者新的代码变更可能会在无意中引发错误。回归测试能确保系统维持稳定的基准状态。
+Ideally, once functional tests pass they keep passing. Reality differs: in software development, new code changes can inadvertently introduce errors. Regression testing keeps the system at a stable baseline.
 
-**例如**：任何代码变更发生时，总会有某种形式的回归测试被启用。这包括所有相关更新，例如缺陷修复后的调整、新功能的引入或软件升级后的验证。
+**For example:** any code change triggers some form of regression testing, covering related updates such as post-fix adjustments, the introduction of new features, or verification after a software upgrade.
 
-### 健全测试
+### Sanity testing
 
-健全测试是一种快速敏捷的检测方式，用于验证现有功能是否未受相对较小的变更或缺陷修复的影响。健全测试常作为快速确认手段，确保新功能不会影响系统其他功能的正常运行。
+Sanity testing is a quick, agile check that verifies existing functionality was not affected by a relatively small change or defect fix. It often serves as fast confirmation that new features don't disrupt other parts of the system.
 
-**例如**：与回归测试类似，健全测试允许您将系统“回滚”至先前状态，以验证性能改进、确认基础操作并确保系统按预期运行。任何代码变更发生时，总会启用某种形式的回归测试。这包括所有相关更新，例如缺陷修复后的调整、新功能的引入或软件升级后的验证。
+**For example:** like regression testing, sanity testing lets you "roll back" the system to a previous state to verify improvements, confirm basic operations, and ensure the system behaves as expected. Any code change triggers some form of regression testing, covering related updates such as post-fix adjustments, new features, or verification after upgrades.
 
-### 冒烟测试
+### Smoke testing
 
-俗话说：“有烟的地方就有火”。这条谚语似乎启发了“冒烟测试”的命名。冒烟测试在开发早期执行，用于评估端到端功能的完整性。若功能测试失败，质量保证团队会立即进行必要修正。
+As the saying goes, "where there's smoke, there's fire." That proverb seems to have inspired the name. Smoke testing is performed early in development to assess end-to-end functional integrity. If it fails, the quality assurance team makes the necessary corrections immediately.
 
-**例如**：冒烟测试可用于验证持续集成与持续交付流水线，作为新软件构建版本（或重大代码变更）部署前的最终检测环节。
+**For example:** smoke testing can validate continuous integration and continuous delivery pipelines as the final gate before deploying a new build (or a major code change).
 
-### 系统测试
+### System testing
 
-系统测试（有时称为端到端测试）旨在评估整个软件系统中各组件协同工作的状况。系统测试通常涉及对多个独立软件系统的分析，这些系统在特定软件系统中可能协同运行，也可能独立运作。
+System testing (sometimes called end-to-end testing) evaluates how components of the whole software system work together. It usually involves analyzing multiple independent software systems that may operate together, or independently, within a given product.
 
-**例如**：端到端场景使测试人员能够评估完整工作流程。对于在线零售业务而言，这意味着覆盖消费者从初始采购订单到完整履约流程的全程消费体验。
+**For example:** end-to-end scenarios let testers assess a complete workflow. For an online retailer, that means the entire consumer experience from the initial purchase order through fulfillment.
 
-## 功能测试与非功能测试
+## Functional versus non-functional testing
 
-顾名思义，非功能测试评估的是那些通常不直接影响功能运行的应用行为。然而，提供组织有序且愉悦的用户体验现已被视为软件开发的重要组成部分。非功能测试能够揭示潜在系统问题，尤其在软件需要展现更高可扩展性时尤为关键。
+As the name suggests, non-functional testing evaluates application behaviors that usually don't directly affect whether features run. Yet an organized, pleasant user experience is now considered an essential part of software development. Non-functional testing can surface latent system issues—especially when software has to scale.
 
-### 负载测试
+### Load testing
 
-负载测试是非功能测试的关键形式之一。理论上，系统处理数千个系统请求时应与处理单个请求保持同样的响应效率。但现实经验往往与此相悖。负载测试旨在验证系统能否承受峰值负载乃至极端工作负荷的激增。
+Load testing is a key form of non-functional testing. In theory, a system handling thousands of requests should respond as efficiently as it does for a single request. Real-world experience often contradicts that. Load testing verifies whether a system can withstand peak load and even extreme surges.
 
-### 性能测试
+### Performance testing
 
-另一类非功能测试则特别关注性能表现。系统能否流畅迅速地响应请求，对保障良好性能至关重要。性能测试中的测试方案会评估用户等待请求处理所需的时间。经过周密设计的性能测试有助于在早期最大限度减少延迟。
+Another non-functional category focuses specifically on performance. Whether a system responds smoothly and quickly is critical to good performance. Performance test plans measure how long users must wait for requests to be handled, and well-designed performance testing helps minimize latency early.
 
-### 安全测试
+### Security testing
 
-鉴于数据安全的重要性，出现专门针对这一现代需求的测试类型也就不足为奇。动态应用程序安全测试 (DAST) 和静态应用程序安全测试 (SAST) 等安全测试方法能帮助测试人员检测安全漏洞。企业会根据潜在威胁来选择相应的安全测试方法。
+Given how important data security is, it's no surprise that dedicated testing types have emerged for this modern need. Security testing methods such as dynamic application security testing (DAST) and static application security testing (SAST) help testers detect vulnerabilities. Enterprises choose their methods according to the threats they face.
 
-### 可用性测试
+### Usability testing
 
-有一种非功能测试类型完全关注用户体验的质量。可用性测试属于手动测试过程，最适用于小规模测试。但应尽可能实施该测试——特别是在执行应用程序本地化等操作时，因此类操作引入的复杂性可能触发人为错误，存在较大风险。
+One non-functional type focuses entirely on the quality of the user experience. Usability testing is a manual process best suited to small-scale testing, but it should be performed whenever possible—especially when carrying out operations such as application localization, where the added complexity raises the risk of human error.
 
-## 功能测试工具
+## Functional testing tools
 
-要准确掌握各类功能测试工具需要投入大量精力，因为大多数工具支持不同平台和应用程序类型。虽然无法完全跟上这个蓬勃发展的市场（预估市面存在的功能测试工具数量轻松突破数百甚至上千款），但以下列举的工具因其广受认可的热度与实用价值而脱颖而出。
+Fully tracking functional testing tools takes real effort, since most support different platforms and application types. It's impossible to keep pace with this booming market (estimates put the number of tools well into the hundreds or thousands), but the following stand out for their popularity and practical value.
 
-- **Appium**：功能测试市场拥有众多开源工具，其中 Appium 高居榜首。Appium 支持多种编程语言。此外，Appium 支持在 iOS 和 Android 平台上实现原生应用程序、移动网页应用程序及混合应用程序的测试自动化。
+- **Appium**: the functional testing market offers many open-source tools, and Appium ranks at the top. It supports a wide range of programming languages and can automate native, mobile web, and hybrid applications on both iOS and Android.
 
-- **Katalon Studio**：测试自动化平台 Katalon Studio 提供了建立与评估回归测试及端到端测试结果的解决方案。其具备录制回放功能并支持跨平台协同操作。
+- **Katalon Studio**: the test automation platform Katalon Studio offers solutions for building and evaluating regression and end-to-end test results. It includes record-and-playback capability and supports cross-platform collaboration.
 
-- **Micro Focus Unified Functional Testing (UFT)**：Micro Focus 推出的 UFT 是另一款商业测试工具，为测试人员提供清晰的多平台视角，可同时监测 Web 服务、应用程序编程接口 (API) 及图形用户界面 (GUI)的运行状态。
+- **Micro Focus Unified Functional Testing (UFT)**: another commercial tool, UFT gives testers a clear multiplatform view of web services, application programming interfaces (APIs), and graphical user interfaces (GUIs) at once.
 
-- **Playwright**：Microsoft 开发的商业框架，专注于实现 Web 浏览器自动化。该工具以强化可靠性著称。虽然 Playwright 确实支持现代网页特性，但在编程语言处理方面提供的选项相对有限。
+- **Playwright**: a Microsoft-developed commercial framework focused on web browser automation, known for reinforcing reliability. While Playwright does support modern web features, it offers relatively limited options when it comes to programming languages.
 
-- **Selenium**：作为最受欢迎的测试自动化工具之一，Selenium 是一款开源框架。这款基于浏览器的工具允许测试人员使用多种主流编程语言（包括 JavaScript™️、NodeJS 和 Python）编写并评估测试脚本。 
-
+- **Selenium**: one of the most popular test automation tools, Selenium is an open-source framework. This browser-based tool lets testers write and evaluate test scripts in several mainstream programming languages, including JavaScript™, Node.js, and Python.

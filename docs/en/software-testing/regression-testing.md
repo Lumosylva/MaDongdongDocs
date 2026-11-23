@@ -1,130 +1,130 @@
-# 什么是回归测试？
+# What is regression testing?
 
-> 发布日期 2026年11月23日 | 更新日期 2026年11月23日
+> Published November 23, 2026 | Updated November 23, 2026
 >
 > By [IBM Think](https://www.ibm.com/think/topics/regression-testing)
 
-![performance-testing](/images/software-testing/regression-testing.avif)
+![regression-testing](/images/software-testing/regression-testing.avif)
 
-## 回归测试的定义
+## Definition of regression testing
 
-回归测试过程是一种软件测试战略，用于确认代码修改不会损害现有功能或引入新的错误。
+Regression testing is a software testing strategy used to confirm that code modifications do not damage existing functionality or introduce new errors.
 
-回归测试通常在漏洞修复后实施，通过重新运行测试来确保新增代码后功能仍按预期运行。
+It is usually carried out after a bug fix, rerunning tests to make sure functionality still works as expected once new code has been added.
 
-回归测试的部分独特之处在于它能够自由地跨越软件开发测试的所有不同阶段。回归测试可以在您想要或需要退一步并确保引入的新代码不会损害整体功能和工作流程效率时进行。
+Part of what makes regression testing distinctive is that it can freely span every stage of software development testing. You can perform it whenever you want, or need, to step back and confirm that newly introduced code does not harm overall functionality or the efficiency of a workflow.
 
-## 谁应该使用回归测试？
+## Who should use regression testing?
 
-任何持续更新代码的组织都需要实施回归测试方法。代码更新如此普遍，以至于无法获得准确的总量统计。
+Any organization that continuously updates code needs a regression testing approach. Code updates are so pervasive that no accurate total can be compiled.
 
-但由于人工智能 (AI) 和持续集成/持续交付 (CI/CD) 管道等技术，许多企业正不断提高代码变更频率，部分企业甚至每日更新。这意味着回归测试需求正在持续累积。
+Yet thanks to technologies such as artificial intelligence (AI) and continuous integration/continuous delivery (CI/CD) pipelines, many businesses are raising the frequency of code changes—and some update daily. That means demand for regression testing keeps accumulating.
 
-回归测试占据中心地位的一个关键领域是质量保证 (QA) 工作时期。回归测试和 QA 团队的使命非常相似，即优化用户体验并提供高质量的数据和最安全的软件。
+One key area where regression testing takes center stage is quality assurance (QA) work. The missions of regression testing and QA teams are very similar: optimize the user experience and deliver high-quality data and the safest possible software.
 
-唯一的区别在于每种方式对整体情况的关注程度。回归测试使用更精确的范围来重点关注最近所做的更改，而质量保证 (QA) 则评估整个系统及其运作。
+The only difference lies in how much each approach focuses on the whole picture. Regression testing uses a more precise scope, concentrating on the changes made most recently, while QA assesses the entire system and how it operates.
 
-## 回归测试八步骤
+## Eight steps of regression testing
 
-回归测试技术的作用是防止代码更改与托管系统不兼容。采取这样的措施对于保持系统运行优化非常重要。
+The role of regression testing techniques is to prevent code changes from being incompatible with the hosting system. Taking such measures matters a great deal for keeping the system optimized.
 
-在回归测试中，通常遵循以下步骤序列（或类似步骤序列）：
+Regression testing usually follows this sequence of steps, or a similar one:
 
-1. **引入代码变更**： 在源代码中添加新代码、修改现有代码或优化当前功能。
-2. **评估潜在影响**： 分析应用程序，识别可能受变更影响的区域。
-3. **选择测试用例**：DevOps 开发运维团队根据回归测试套件中的测试用例进行测试选择，尤其关注涵盖关键功能的测试用例。它们可以包括单元测试（针对单个模块）、功能测试（用于验证运营）或整合测试（确保组件协同工作）。
-4. **对测试用例进行优先级排序**：当选择多个测试用例时，团队会对测试用例进行优先级排序，根据重要性和潜在影响对它们进行整理。
-5. **运行测试用例**：手动执行测试或使用自动回归测试工具。无论采用何种方法（例如，手动测试还是自动化测试），都依赖于测试脚本，即指导测试人员操作的结构化模板。
-6. **报告分析测试结果**： 审查测试结果及支撑数据。若发现漏洞或故障，立即通知开发团队。
-7. **进行修复并重新测试案例**：开发人员对现有测试用例进行必要的修复，并重新测试之前标记的问题，以确认解决方案。
-8. **根据需要重复全过程**： 持续进行回归测试循环，确保网络应用程序按预期运行。
+1. **Introduce the code change**: add new code to the source, modify existing code, or optimize current functionality.
+2. **Assess potential impact**: analyze the application and identify the areas that the change may affect.
+3. **Select test cases**: DevOps teams select test cases from the regression test suite, paying particular attention to those covering critical functionality. They can include unit tests (for individual modules), functional tests (to verify operation), or integration tests (to ensure components work together).
+4. **Prioritize the test cases**: when multiple test cases are selected, the team prioritizes them, organizing them by importance and potential impact.
+5. **Run the test cases**: execute tests manually or with automated regression testing tools. Whichever method is used—manual or automated—it relies on test scripts, the structured templates that guide testers.
+6. **Report and analyze the results**: review test results and the supporting data. If defects or failures appear, notify the development team immediately.
+7. **Fix and retest**: developers make the necessary fixes in the existing test cases and retest the previously flagged issues to confirm the solution.
+8. **Repeat as needed**: keep the regression testing loop running to ensure the web application behaves as expected.
 
-## 回归测试类型
+## Types of regression testing
 
-对于一个看似简单的主题，有大量的回归测试技术可供使用。每种方法都对回归测试有自己独特的见解。
+For a seemingly simple topic, there is a large number of regression testing techniques available, and each method offers its own distinct perspective.
 
-### 单元回归测试
+### Unit regression testing
 
-如其名称所示，此形式的回归测试专注于系统组件或模块（即“单元”），检测是否在单个单元中引入错误。
+As the name suggests, this form focuses on system components or modules—the "units"—checking whether an error was introduced within a single unit.
 
-**示例**：开发者为网站添加“忘记密码”功能时，单元回归测试将验证原有登录机制在新增功能后仍正常运作。
+**Example:** when a developer adds a "forgot password" feature to a website, unit regression testing verifies that the existing login mechanism still works after the new feature is added.
 
-### 部分回归测试
+### Partial regression testing
 
-当目标是查明最近的更改是否只影响更新后系统的子集时，可使用部分回归测试检测该子集并执行适当的诊断。
+When the goal is to find out whether recent changes affect only a subset of the updated system, partial regression testing identifies that subset and performs the appropriate diagnostics.
 
-**示例**：假设网站正在集成新支付网关。部分回归测试可能 仅评估新功能的局部运行机制，而不测试关联性较弱的功能。
+**Example:** suppose a website is integrating a new payment gateway. Partial regression testing might evaluate only the local behavior of the new feature, without testing loosely related functionality.
 
-### 完整回归测试
+### Complete regression testing
 
-在某些情况下（例如完成重大代码变更后），需要进行更全面的测试。完全回归测试要求重新测试整个系统或应用程序，以确保功能的持续完整性。
+In some cases—after a major code change, for example—more comprehensive testing is required. Complete regression testing retests the entire system or application to ensure continued functional integrity.
 
-**示例**：当网站开发者决定新增精选产品画廊功能后，企业需对新画廊功能及所有现有测试用例运行完整的回归测试。
+**Example:** after website developers decide to add a featured products gallery, the company must run complete regression testing across the new gallery feature and all existing test cases.
 
-### 选择性回归测试
+### Selective regression testing
 
-选择性回归测试为回归测试引入预测性元素。其中，测试人员根据经验判断哪些区域可能受代码变更影响，据此从测试套件中筛选测试用例。
+Selective regression testing introduces a predictive element. Testers use experience to judge which areas a code change is likely to affect, then select test cases from the suite accordingly.
 
-**示例**：移动应用程序开发者发现需要整合并更新用户界面部分功能时，可采用选择性回归测试来确保用户界面的持续稳定性。
+**Example:** when mobile application developers find they need to integrate and update parts of the user interface, they can use selective regression testing to keep the interface stable.
 
-### 递进型回归测试
+### Progressive regression testing
 
-混合测试采用综合方法同步评估新功能与现有功能。渐进式回归测试通过逐项检测来发现新功能引入的缺陷。
+Hybrid testing takes a comprehensive approach, evaluating new and existing functionality together. Progressive regression testing detects defects introduced by new features one item at a time.
 
-**示例**：企业发布现有软件产品的新更新前，通常执行渐进式回归测试，以确保最新版本的功能与此前系列版本保持一致性。
+**Example:** before releasing a new update to an existing software product, companies typically run progressive regression testing to ensure the newest version stays consistent with the previous versions in the series.
 
-### 修正型回归测试
+### Corrective regression testing
 
-校正性回归测试的核心在于确保数据一致性。通过重新运行测试用例来验证结果是否保持一致，校正性回归测试通常在代码库未发生变更时执行。
+Corrective regression testing centers on data consistency. It reruns test cases to verify that results stay consistent, and it is usually performed when the codebase has not changed.
 
-**示例**：添加到软件中的并不总是新功能。有时，引入修改是为了完善代码，使其运行得更好。修正型回归测试用于重构代码的情形，以确保重构不会引入代码错误。
+**Example:** what gets added to software is not always a new feature. Sometimes a modification is introduced to refine the code so it runs better. Corrective regression testing applies to code refactoring, ensuring the refactor does not introduce errors.
 
-### 重新测试所有回归测试
+### Retest-all regression testing
 
-重新测试所有回归测试被视为最终阶段之后的测试。它涉及开发团队对所有已经通过的回归测试用例进行测试，以确保各部分协调互动。
+Retest-all regression testing is considered testing after the final stage. It involves the development team testing every regression test case that has already passed, to ensure the parts interact correctly.
 
-**示例**：重新测试所有回归测试通常用于检查软件架构发生重大变化时可能伴随的变化。例如，一个金融应用程序采用了一个新的框架，这意味着运营上的重大变化。
+**Example:** retest-all regression testing is typically used to check changes that accompany major shifts in software architecture—for instance, a financial application adopting a new framework, which implies significant operational change.
 
-### 自动化回归测试
+### Automated regression testing
 
-上述测试类型可能耗时较长，因此常借助自动化测试工具加速流程。即使涉及大型系统，测试执行速度也能显著提升。
+The test types above can take a long time, so automated testing tools are often used to speed things up. Even with large systems, test execution can become significantly faster.
 
-**示例**：后端更新后可采用自动化回归测试，验证应用程序编程接口  (API) 端点是否持续生成正确数据与响应，从而确认整体运行正常。
+**Example:** after a backend update, automated regression testing can verify that application programming interface (API) endpoints continue to return correct data and responses, confirming overall health.
 
-### 手动回归测试
+### Manual regression testing
 
-某些测试场景需要人类的理解，这时需要进行手动回归测试。众所周知，由于人工测试在告知工作内容时具有特殊的敏感性，因此通常需要更多的时间来完成。
+Some test scenarios require human understanding, which is where manual regression testing comes in. It is well known to take longer, because human testing carries a particular sensitivity when it comes to conveying what the work involves.
 
-**示例**：网站需在不同平台上保持美观性与一致性。通过手动回归测试，可验证布局调整后的网站响应能力。
+**Example:** websites need to remain attractive and consistent across platforms. Manual regression testing can verify a site's responsiveness after layout adjustments.
 
-### Selenium 回归测试
+### Selenium regression testing
 
-此回归测试利用了开源 Web 自动化框架 Selenium。Selenium 回归测试通过及早检测回归并确保新的更改不会破坏现有代码，从而增强软件稳定性。它在持续更新的情况下特别有用，例如持续整合。
+This form of regression testing takes advantage of the open-source Selenium web automation framework. Selenium regression testing strengthens software stability by detecting regressions early and ensuring new changes do not break existing code. It is especially useful when code changes continuously, as in continuous integration.
 
-**示例**：航空公司预订系统新增了一项功能，除了此前仅支持的信用卡支付外，现在还支持借记卡支付。Selenium 能够验证信用卡支付流程是否持续按预期运行。
+**Example:** an airline reservation system adds a feature that supports debit card payments in addition to the credit card payments it previously supported. Selenium can verify that the credit card payment flow still works as expected.
 
-### 非功能性回归测试
+### Non-functional regression testing
 
-软件质量需根据软件开发生命周期 (SDLC) 之外的多种变量进行评估。非功能性回归测试旨在验证软件是否具备高安全性且支持良好用户体验。
+Software quality must be evaluated against multiple variables beyond the software development lifecycle (SDLC). Non-functional regression testing aims to verify that software is highly secure and supports a good user experience.
 
-**示例**：网站开发人员添加了新功能，然后希望确定新功能对运行速度有何影响。非功能性回归测试检查加载时间。如果加载时间增加了，则表明出现了回归。
+**Example:** a website developer adds a new feature and then wants to determine how it affects operating speed. Non-functional regression testing checks load time. If load time increased, that indicates a regression.
 
-## 回归测试使用哪些技术？
+## What techniques does regression testing use?
 
-回归测试的另一关键价值在于它能与其他测试方案协同产生“1+1>2”的效应。以下是几个示例：
+Another key value of regression testing is that it can combine with other testing approaches to produce effects greater than the sum of their parts. Here are a few examples:
 
-- **探索性测试**：探索性测试可与回归测试结合产生更多分析结果。二者运作机制不同——回归测试通过脚本化测试验证系统预期行为，而探索性测试则通过开发者的非脚本化探索发现意外问题。不过，这两种测试方案可以互补使用，从而相互补充、相互验证。有些企业直接融合二者形成“探索性回归测试”，使开发者既获得方向指导又保持灵活性。探索性测试则有助于改进现有用例或创建新测试用例，从而提升测试覆盖的全面性。
+- **Exploratory testing**: exploratory testing can be combined with regression testing to produce richer analysis. The two work differently—regression testing verifies expected system behavior through scripted tests, while exploratory testing discovers unexpected problems through unscripted exploration. Even so, the two approaches complement each other and can validate one another. Some companies fuse them into "exploratory regression testing," which gives developers both direction and flexibility. Exploratory testing also helps improve existing test cases or create new ones, broadening overall coverage.
 
-- **持续测试**：回归测试常与持续测试协同使用。顾名思义，持续测试要求将测试实践持续集成到完整 SDLC 中。持续测试是回归测试的既定组成部分。 若缺少持续测试，回归测试无法真正实现其设计价值。 融合二者形成的“持续回归训练”让测试人员能更自由地聚焦于可能存在缺陷的高优先级测试环境。
+- **Continuous testing**: regression testing is often used alongside continuous testing. As the name suggests, continuous testing requires test practices to be integrated throughout the SDLC, and it is an established part of regression testing. Without continuous testing, regression testing cannot truly deliver the value it was designed for. Combining the two produces "continuous regression," which lets testers focus more freely on high-priority test environments where defects are likely.
 
-- **端到端测试**：与回归测试协同的另一项技术是端到端测试，它通过模拟真实用户场景来验证系统的完整工作流。E2E 测试聚焦用户体验及接口、后端和相关数据库等组件。回归测试与 E2E 具有高度互补性——回归测试可包含完整的 E2E 测试用例，而 E2E 测试能发现需通过回归测试修复的问题。
+- **End-to-end testing**: another technique that pairs well with regression testing is end-to-end testing, which validates a system's complete workflow by simulating real user scenarios. E2E testing focuses on the user experience and on components such as interfaces, backends, and related databases. Regression testing and E2E are highly complementary—regression testing can include complete E2E test cases, while E2E testing surfaces issues that regression testing then fixes.
 
-## 回归测试和 AI
+## Regression testing and AI
 
-AI 带来的广泛影响令人惊叹。技术行业对 AI 的投入远超其他领域，回归测试正是受 AI 驱动实现革命性加速的技术流程之一。
+The breadth of AI's impact is striking. The technology industry invests in AI far more than other sectors do, and regression testing is one of the processes AI has revolutionized in terms of speed.
 
-“加速”这个词很恰当，因为 AI 增强回归测试的主要方式，是最大限度地加快得出各种结论的速度。然而，AI 也在提高测试数据的准确性。
+"Accelerate" is the right word, because the main way AI enhances regression testing is by maximizing the speed at which conclusions of all kinds can be reached. AI is also improving the accuracy of test data, however.
 
-具体来说，AI 正在利用其算法，通过分析历史测试数据、用户行为和代码变更来构建相关测试用例。这有助于根据预测的影响确定测试的优先级。当 AI 运行这些测试时，它们运行得更快，并能更快地产生结果。
+Specifically, AI uses its algorithms to build relevant test cases by analyzing historical test data, user behavior, and code changes. This helps prioritize tests according to predicted impact. When AI runs those tests, they run faster and produce results sooner.
 
-AI 甚至通过缺陷检测方法和自愈测试提升回归测试的本质与质量。即使在持续开发环境中也能保持自动化测试的有效性。最终，AI 通过优化决策与自动化任务来改进回归测试，从而降低成本并加速产品上市。
+AI even improves the essence and quality of regression testing through defect detection methods and self-healing tests, keeping automated testing effective even in continuous development environments. Ultimately, AI improves regression testing by optimizing decisions and automating tasks, which lowers costs and speeds time to market.
